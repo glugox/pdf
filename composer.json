@@ -20,6 +20,12 @@
             "Glugox\\PDF\\": ""
         }
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/glugox/core"
+        }
+    ],
     "authors": [
         {
             "name": "Ervin Beciragic",
