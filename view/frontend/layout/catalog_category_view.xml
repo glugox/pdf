@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * This file is part of Glugox.
+ *
+ * (c) Glugox <glugox@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Glugox_PDF::css/pdf.css"/>
+    </head>
+    <body>
+        <referenceContainer name="product.info.social">
+            <block class="Glugox\PDF\Block\PdfButton" name="glugox-pdf" after="-" template="Glugox_PDF::product/pdf.phtml"></block>
+        </referenceContainer>
+        <referenceBlock name="page.main.title">
+            <block class="Glugox\PDF\Block\PdfButton" name="glugox-pdf" after="-" template="Glugox_PDF::category/pdf.phtml"></block>
+        </referenceBlock>
+    </body>
+</page>

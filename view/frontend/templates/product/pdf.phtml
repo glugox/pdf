@@ -1,0 +1,15 @@
+<?php
+/**
+ * This file is part of Glugox.
+ *
+ * (c) Glugox <glugox@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+?>
+<?php $_product = $block->getProduct() ?>
+<?php if ($block->canDisplayOnProduct($_product)): ?>
+    <a href="<?php /* @escapeNotVerified */ echo $this->helper('Glugox\PDF\Helper\Data')->getProductPrintPdfUrl($_product) ?>"
+       class="action link pdf"><span><?php /* @escapeNotVerified */ echo __('PDF') ?></span></a>
+<?php endif; ?>

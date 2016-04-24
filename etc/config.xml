@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!--
+ * This file is part of Glugox.
+ *
+ * (c) Glugox <glugox@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../Store/etc/config.xsd">
+    <default>
+        <glugox_pdf>
+            <general>
+                <max_items_on_list>400</max_items_on_list>
+            </general>
+            <design>
+                <display_logo>1</display_logo>
+                <logo_height>70</logo_height>
+                <header_on_each_page>1</header_on_each_page>
+                <display_store_name>1</display_store_name>
+                <display_price>1</display_price>
+                <display_categories>1</display_categories>
+                <display_sku>1</display_sku>
+                <display_description_in_single_mode>1</display_description_in_single_mode>
+                <display_attributes_in_single_mode>1</display_attributes_in_single_mode>
+                <general_padding>15</general_padding>
+                <body_padding>20</body_padding>
+            </design>
+            <typography>
+                <single_title_size>30</single_title_size>
+                <single_title_max_chars_in_line>32</single_title_max_chars_in_line>
+                <list_title_size>22</list_title_size>
+                <list_title_max_chars_in_line>34</list_title_max_chars_in_line>
+                <color_lines>#eeeeee</color_lines>
+                <color_categories>#999999</color_categories>
+                <color_sku>#999999</color_sku>
+                <color_store_name>#999999</color_store_name>
+                <color_price>#000000</color_price>
+                <color_price_old>#cccccc</color_price_old>
+                <color_title>#020202</color_title>
+                <color_text>#020202</color_text>
+            </typography>
+            <availability>
+                <allowed_on_product_pages>1</allowed_on_product_pages>
+                <allowed_on_category_pages>1</allowed_on_category_pages>
+                <allowed_on_anchor_categories>1</allowed_on_anchor_categories>
+                <allowed_on_non_anchor_categories>1</allowed_on_non_anchor_categories>
+            </availability>
+            <image>
+                <show_image_in_single_mode>1</show_image_in_single_mode>
+                <single_image_max_width>400</single_image_max_width>
+                <single_image_max_height>400</single_image_max_height>
+                <show_image_in_list_mode>1</show_image_in_list_mode>
+                <list_image_max_width>120</list_image_max_width>
+                <list_image_max_height>70</list_image_max_height>
+            </image>
+        </glugox_pdf>
+    </default>
+</config>

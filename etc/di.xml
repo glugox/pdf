@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+ * This file is part of Glugox.
+ *
+ * (c) Glugox <glugox@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/ObjectManager/etc/config.xsd">
+    <preference for="Glugox\PDF\Model\Provider\PDF\ProviderInterface" type="Glugox\PDF\Model\Provider\DefaultPDFProvider" />
+    <preference for="Glugox\PDF\Model\Provider\Products\ProviderInterface" type="Glugox\PDF\Model\Provider\Layer\Products" />
+    <preference for="Glugox\PDF\Api\PDFServiceInterface" type="Glugox\PDF\Model\PDFService" />
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="glugox_pdf_create" xsi:type="object">Glugox\PDF\Console\Command\CreateCommand</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

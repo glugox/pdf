@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<!--
+ * This file is part of Glugox.
+ *
+ * (c) Glugox <glugox@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../Magento/Config/etc/system_file.xsd">
+    <system>
+        <section id="glugox_pdf" showInDefault="1" showInWebsite="1" showInStore="1">
+            <tab>glugox</tab>
+            <label>PDF</label>
+            <resource>Magento_Config::config</resource>
+            <group id="general" showInDefault="1" sortOrder="10">
+                <label>General Settings</label>
+                <field id="max_items_on_list" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Maximum items allowed in PDF list mode</label>
+                </field>
+            </group>
+            <group id="design" showInDefault="1" sortOrder="20">
+                <label>Design Settings</label>
+                <field id="logo_src" translate="label" type="image" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Logo Image</label>
+                    <comment>Allowed file types:PNG, JPG, JPEG, TIF</comment>
+                    <backend_model>Glugox\PDF\Model\Config\Backend\Logo</backend_model>
+                    <base_url type="media" scope_info="1">logo</base_url>
+                </field>
+                <field id="display_logo" translate="label" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display logo</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="logo_height" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Logo height</label>
+                    <comment>Logo width is proportionally calculated using height. Measurement is in points (1/72 of an inch)</comment>
+                </field>
+                <field id="header_on_each_page" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Draw header on each PDF page</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="display_store_name" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display store name</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="store_name" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Store name in pdf</label>
+                    <comment>If not set, default store name is used. Use 'Display store name' to disable.</comment>
+                </field>
+                <field id="display_price" translate="label" type="select" sortOrder="55" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display price</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="display_categories" translate="label" type="select" sortOrder="56" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display Categories</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="display_sku" translate="label" type="select" sortOrder="57" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display Sku</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="display_description_in_single_mode" translate="label" type="select" sortOrder="58" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display description in single mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="display_attributes_in_single_mode" translate="label" type="select" sortOrder="59" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display attributes in single mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="general_padding" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>General spacing</label>
+                    <comment>For example vertical distance between product categories and product title</comment>
+                </field>
+                <field id="body_padding" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Body padding</label>
+                    <comment>Measurement is in points (1/72 of an inch)</comment>
+                </field>
+            </group>
+            <group id="typography" showInDefault="1" sortOrder="30">
+                <label>Typography</label>
+                <field id="single_title_size" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title font size in single mode</label>
+                </field>
+                <field id="single_title_max_chars_in_line" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title max chars in line - single mode</label>
+                    <comment>This directly depends on the 'Title font size in single mode', for best look it needs to be adopted by testing if you change the values</comment>
+                </field>
+                <field id="list_title_size" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title font size in list mode</label>
+                </field>
+                <field id="list_title_max_chars_in_line" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title max chars in line - list mode</label>
+                    <comment>This directly depends on the 'Title font size in list mode', for best look it needs to be adopted by testing if you change the values</comment>
+                </field>
+                <field id="font_regular" translate="label" type="image" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Font for the regular texts</label>
+                    <comment>Allowed file types:TTF</comment>
+                    <backend_model>Glugox\PDF\Model\Config\Backend\Font</backend_model>
+                    <base_url type="media" scope_info="1">fonts</base_url>
+                </field>
+                <field id="font_bold" translate="label" type="image" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Font for the bold texts</label>
+                    <comment>Allowed file types:TTF</comment>
+                    <backend_model>Glugox\PDF\Model\Config\Backend\Font</backend_model>
+                    <base_url type="media" scope_info="1">fonts</base_url>
+                </field>
+                <field id="color_lines" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Lines color</label>
+                </field>
+                <field id="color_categories" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Categories color</label>
+                </field>
+                <field id="color_sku" translate="label" type="text" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>SKU color</label>
+                </field>
+                <field id="color_store_name" translate="label" type="text" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Store name color</label>
+                </field>
+                <field id="color_price" translate="label" type="text" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Price color</label>
+                </field>
+                <field id="color_price_old" translate="label" type="text" sortOrder="165" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Discounted price color</label>
+                </field>
+                <field id="color_title" translate="label" type="text" sortOrder="170" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title color</label>
+                </field>
+                <field id="color_text" translate="label" type="text" sortOrder="180" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Text color</label>
+                </field>
+            </group>
+            <group id="image" showInDefault="1" sortOrder="40">
+                <label>Image Display Settings</label>
+                <field id="show_image_in_single_mode" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show image in single mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="single_image_max_width" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Maximum width of image in single mode</label>
+                    <comment>Measurement is in points (1/72 of an inch)</comment>
+                </field>
+                <field id="single_image_max_height" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Maximum height of image in single mode</label>
+                    <comment>Measurement is in points (1/72 of an inch)</comment>
+                </field>
+                <field id="show_image_in_list_mode" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show image in list mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="list_image_max_width" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Maximum width of image in list mode</label>
+                    <comment>Measurement is in points (1/72 of an inch)</comment>
+                </field>
+                <field id="list_image_max_height" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Maximum height of image in list mode</label>
+                    <comment>Measurement is in points (1/72 of an inch)</comment>
+                </field>
+            </group>
+            <group id="availability" showInDefault="1" sortOrder="50">
+                <label>Frontend Availability</label>
+                <field id="allowed_on_product_pages" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Allowed on product pages</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="allowed_on_category_pages" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Allowed on category pages</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="allowed_on_anchor_categories" translate="label" type="select" sortOrder="21" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Allowed on anchor categories</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Anchor categories ar those with layer filterings</comment>
+                </field>
+                <field id="allowed_on_non_anchor_categories" translate="label" type="select" sortOrder="22" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Allowed on non anchor categories</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Non anchor categories ar those without layer filterings</comment>
+                </field>
+                <field id="allowed_customer_groups" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Allowed customer groups</label>
+                    <comment>Restrict pdf button on frontend for specific customer groups. Empty means allowed for all. Comma separated for multiple: 3,5,9</comment>
+                </field>
+                <field id="allowed_customers" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Allowed customers</label>
+                    <comment>Restrict pdf button on frontend for specific customers. Empty means allowed for all. Comma separated for multiple: 43,55</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

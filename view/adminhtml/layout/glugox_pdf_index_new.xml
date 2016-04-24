@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--
+ * This file is part of Glugox.
+ *
+ * (c) Glugox <glugox@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Glugox_PDF::pdf.css"/>
+    </head>
+    <update handle="glugox_pdf_index_edit"/>
+    <body>
+        <referenceBlock name="content">
+            <block class="Magento\Backend\Block\Template" name="glugox_pdf.popup.container" template="Glugox_PDF::pdf/popup_container.phtml" before="-"/>
+        </referenceBlock>
+    </body>
+</page>

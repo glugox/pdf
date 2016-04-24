@@ -1,0 +1,45 @@
+/**
+ * This file is part of Glugox.
+ *
+ * (c) Glugox <glugox@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+.action.pdf {
+    margin-left: 5%;
+    color: #999999;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    text-transform: uppercase;
+    &:before{
+        content: '\e614';
+        display: inline-block;
+        font-family: "luma-icons";
+        font-weight: normal;
+        font-size: 16px;
+        line-height: 16px;
+        margin: -2px 2px 0 0;
+        overflow: hidden;
+        text-align: center;
+        vertical-align: middle;
+    };
+    &:hover{
+        color: #333333;
+        text-decoration: none;
+    }
+}
+
+/** on category pages the pdf button is displayed in title wrapper, so float it right when it is there **/
+.page-title-wrapper .action.pdf{
+    margin: 0 10px;
+}
+
+@media all and (min-width: 768px), print {
+    .page-title-wrapper .action.pdf{
+        float: right;
+        margin-top: 20px;
+    }
+}
