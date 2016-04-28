@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * This file is part of Glugox.
+ *
+ * (c) Glugox <glugox@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../etc/page_configuration.xsd">
+    <head>
+        <meta content="595:842:" name="size"></meta>
+    </head>
+    <body>
+
+        <!--<container name="root">
+            <container name="wrapper">
+                <container name="header" />
+                <container name="content" />
+                <container name="footer" />
+            </container>
+        </container>-->
+    </body>
+</page>

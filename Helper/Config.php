@@ -168,7 +168,8 @@ class Config extends AbstractHelper {
         if (isset($this->_configCache[$path])) {
             return $this->_configCache[$path];
         }
-        return $this->_scopeConfig->getValue('glugox_pdf/' . $path, 'default');
+        $this->_configCache[$path] = $this->_scopeConfig->getValue('glugox_pdf/' . $path, 'default');
+        return $this->_configCache[$path];
     }
 
 
@@ -182,7 +183,7 @@ class Config extends AbstractHelper {
      * in the same request.
      *
      * @param type $path
-     * @return Glugox\PDF\Helper\Config
+     * @return \Glugox\PDF\Helper\Config
      */
     public function setConfig($path, $value) {
         $this->_configCache[$path] = $value;

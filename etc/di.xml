@@ -11,11 +11,17 @@
     <preference for="Glugox\PDF\Model\Provider\PDF\ProviderInterface" type="Glugox\PDF\Model\Provider\DefaultPDFProvider" />
     <preference for="Glugox\PDF\Model\Provider\Products\ProviderInterface" type="Glugox\PDF\Model\Provider\Layer\Products" />
     <preference for="Glugox\PDF\Api\PDFServiceInterface" type="Glugox\PDF\Model\PDFService" />
+    <preference for="Glugox\PDF\Model\Layout\LayoutInterface" type="Glugox\PDF\Model\Layout\Layout" />
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">
                 <item name="glugox_pdf_create" xsi:type="object">Glugox\PDF\Console\Command\CreateCommand</item>
             </argument>
+        </arguments>
+    </type>
+    <type name="Glugox\PDF\Model\Layout\Layout">
+        <arguments>
+            <argument name="fileSource" xsi:type="object">Magento\Framework\View\Layout\File\Collector\Aggregated\Proxy</argument>
         </arguments>
     </type>
 </config>

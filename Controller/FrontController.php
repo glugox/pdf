@@ -67,12 +67,31 @@ abstract class FrontController extends  \Magento\Framework\App\Action\Action {
     protected $_storeManager;
 
     /**
+     * @var \Magento\Framework\ObjectManagerInterface
+     */
+    protected $_objectManager;
+
+    /**
+     * @var \Glugox\PDF\Helper\ProductPdf
+     */
+    protected $_productHelper;
+
+    /**
+     * FrontController constructor.
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magento\Framework\Registry $registry
-     * @param \Glugox\PDF\Helper\Data $helper
+     * @param \Glugox\PDF\Helper\Data $pdfHelper
      * @param \Glugox\PDF\Api\PDFServiceInterface $service
      * @param \Magento\Framework\Json\Helper\Data $jsonHelper
      * @param \Magento\Framework\Escaper $escaper
+     * @param \Magento\Framework\App\Response\Http\FileFactory $fileFactory
+     * @param \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator
+     * @param \Glugox\PDF\Model\PDF $pdf
+     * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
+     * @param \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     * @param \Glugox\PDF\Helper\ProductPdf $productHelper
      */
     public function __construct(
     \Magento\Backend\App\Action\Context $context,
@@ -86,7 +105,9 @@ abstract class FrontController extends  \Magento\Framework\App\Action\Action {
             \Glugox\PDF\Model\PDF $pdf,
             \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
             \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository,
-            \Magento\Store\Model\StoreManagerInterface $storeManager
+            \Magento\Store\Model\StoreManagerInterface $storeManager,
+            \Magento\Framework\ObjectManagerInterface $objectManager,
+            \Glugox\PDF\Helper\ProductPdf $productHelper
     ) {
         parent::__construct($context);
         $this->_registry = $registry;
@@ -100,6 +121,8 @@ abstract class FrontController extends  \Magento\Framework\App\Action\Action {
         $this->productRepository = $productRepository;
         $this->categoryRepository = $categoryRepository;
         $this->_storeManager = $storeManager;
+        $this->_objectManager = $objectManager;
+        $this->_productHelper = $productHelper;
     }
 
 

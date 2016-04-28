@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ * This file is part of Glugox.
+ *
+ * (c) Glugox <glugox@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:include schemaLocation="./head.xsd"/>
+    <xs:include schemaLocation="./body.xsd"/>
+
+    <xs:complexType name="pageType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="body" type="bodyType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="head" type="headType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute  type="xs:string" name="layout" />
+        <xs:attribute  type="xs:string" name="label" />
+        <xs:attribute  type="xs:string" name="design_abstraction" />
+    </xs:complexType>
+
+    <xs:element name="page" type="pageType">
+        <xs:unique name="blockKey">
+            <xs:selector xpath=".//block"/>
+            <xs:field xpath="@name"/>
+        </xs:unique>
+        <xs:unique name="containerKey">
+            <xs:selector xpath=".//container"/>
+            <xs:field xpath="@name"/>
+        </xs:unique>
+    </xs:element>
+</xs:schema>

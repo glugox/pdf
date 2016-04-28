@@ -18,6 +18,11 @@
                 <field id="max_items_on_list" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Maximum items allowed in PDF list mode</label>
                 </field>
+                <field id="debug_mode" translate="label" type="select" sortOrder="30" showInDefault="1" showInStore="1" showInWebsite="1">
+                    <label>Debug mode enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Similar to Magento's Template path hints</comment>
+                </field>
             </group>
             <group id="design" showInDefault="1" sortOrder="20">
                 <label>Design Settings</label>

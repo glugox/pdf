@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ * This file is part of Glugox.
+ *
+ * (c) Glugox <glugox@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element type="blockType" name="block">
+        <xs:annotation>
+            <xs:documentation>
+                Argument name must be unique in scope of block.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:key name="blockArgumentName">
+            <xs:selector xpath="./arguments/argument"></xs:selector>
+            <xs:field xpath="@name"></xs:field>
+        </xs:key>
+    </xs:element>
+
+    <xs:element type="blockReferenceType" name="referenceBlock">
+        <xs:annotation>
+            <xs:documentation>
+                Argument name must be unique in scope of reference.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:unique name="referenceBlockArgumentName">
+            <xs:selector xpath="./arguments/argument"></xs:selector>
+            <xs:field xpath="@name"></xs:field>
+        </xs:unique>
+    </xs:element>
+
+    <xs:element type="containerReferenceType" name="referenceContainer"/>
+    <xs:element name="container" type="containerType"/>
+
+
+    <xs:simpleType name="elementNameType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[a-zA-Z][a-zA-Z\d\-_\.]*"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="elementAliasType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[a-zA-Z][a-zA-Z\d\-_\.]*"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="elementPositionType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[a-zA-Z][a-zA-Z\d\-_\.]*|-"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="elementOutputType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="containerType">
+        <xs:annotation>
+            <xs:documentation>
+                Container for structuring elements of a page.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="block" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="container" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="referenceBlock" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="referenceContainer" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute type="elementNameType" name="name"/>
+        <xs:attribute type="xs:string" name="label"/>
+        <xs:attribute type="elementOutputType" name="output"/>
+        <xs:attribute type="elementAliasType" name="as"/>
+        <xs:attribute type="elementPositionType" name="after"/>
+        <xs:attribute type="elementPositionType" name="before"/>
+        <xs:attribute type="xs:int" name="order" use="optional"/>
+        <xs:attribute type="xs:string" name="style"/>
+    </xs:complexType>
+
+    <xs:simpleType name="blockRendererType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[A-Z][a-zA-Z\d]*(\\[A-Z][a-zA-Z\d]*)*"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="blockType" mixed="true">
+        <xs:annotation>
+            <xs:documentation>
+                Part of view that can generate appropriate content.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="block" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="container" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="referenceBlock" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute type="elementNameType" name="name" use="optional"/>
+        <xs:attribute type="blockRendererType" name="renderer" use="optional"/>
+        <xs:attribute type="elementAliasType" name="as" use="optional"/>
+        <xs:attribute type="xs:string" name="template" use="optional"/>
+        <xs:attribute type="elementPositionType" name="before" use="optional"/>
+        <xs:attribute type="elementPositionType" name="after" use="optional"/>
+        <xs:attribute type="elementOutputType" name="output" use="optional"/>
+        <xs:attribute type="xs:string" name="acl" use="optional"/>
+        <xs:attribute type="xs:string" name="ifconfig" use="optional"/>
+        <xs:attribute type="xs:string" name="group" use="optional" />
+        <xs:attribute type="xs:boolean" name="cacheable" default="true" use="optional"/>
+        <xs:attribute type="xs:int" name="ttl" use="optional"/>
+        <xs:attribute type="xs:string" name="style"/>
+        <xs:attribute type="xs:int" name="order" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="blockReferenceType" mixed="true">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="block" minOccurs="0"/>
+            <xs:element ref="container" minOccurs="0"/>
+            <xs:element ref="referenceBlock" minOccurs="0" />
+            <xs:element ref="referenceContainer" minOccurs="0"/>
+        </xs:choice>
+        <xs:attribute type="elementNameType" name="name" use="required"/>
+        <xs:attribute type="xs:boolean" name="display" default="true" use="optional"/>
+        <xs:attribute type="xs:boolean" name="remove" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="containerReferenceType" mixed="true">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="referenceContainer" minOccurs="0" />
+            <xs:element ref="block" minOccurs="0" />
+            <xs:element ref="container" minOccurs="0" />
+            <xs:element ref="referenceBlock" minOccurs="0" />
+        </xs:choice>
+        <xs:attribute type="elementNameType" name="name" use="required"/>
+        <xs:attribute type="xs:string" name="label"/>
+        <xs:attribute type="xs:boolean" name="display" default="true" use="optional"/>
+        <xs:attribute type="xs:boolean" name="remove" use="optional"/>
+    </xs:complexType>
+
+
+</xs:schema>
