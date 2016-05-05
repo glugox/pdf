@@ -16,18 +16,63 @@
     </head>
     <body>
         <container name="root">
-            <container name="wrapper" style="">
-                <container name="product" style="padding:20;">
-                    <container name="product.body" style="background-color:#cccccc; padding:20;">
-                        <block order="1" renderer="Glugox\PDF\Model\Renderer\Block\Renderer" name="product-1"
-                               style="height:100; background-color:#ffffff;">
+            <container name="wrapper" order="1" style="">
+                <container name="product-page" style="background-color:#ffffff; padding:35;">
+                    <container order="1" name="header-wrapper" style="padding:0; margin:0 0 20 0;">
+                        <block order="1" renderer="Glugox\PDF\Model\Renderer\Block\Logo" name="logo"
+                               style="text-align:top left; background-color:#cc00ee; height:45; float:left; display:block; margin:0;">
                         </block>
-                        <block order="2" renderer="Glugox\PDF\Model\Renderer\Block\Renderer" name="product-2"
-                               style="height:100; background-color:#ffffff;">
+                        <block order="2" src="config:getStoreName" renderer="Glugox\PDF\Model\Renderer\Block\TextArea"
+                               name="store-name1"
+                               style="width:100; font-size:12; float:right; height:45; display:block; text-align:bottom right; color:#333333; background-color:#ccffee; margin:0">
                         </block>
-                        <block order="3" renderer="Glugox\PDF\Model\Renderer\Block\Renderer" name="product-3"
-                               style="height:100; background-color:#ffffff;">
+                        <block order="3" name="header-line" renderer="Glugox\PDF\Model\Renderer\Block\Box"
+                               style="height:1; padding:0; color:#f7f7f7; margin:10 0">
                         </block>
+                    </container>
+                    <container order="2" name="product-container" style="">
+                        <container order="1" name="title-container" style="float:left; width:370;">
+                            <block order="1"
+                                   name="product-categories"
+                                   renderer="Glugox\PDF\Model\Renderer\Block\Product\Category"
+                                   style="width:370; font-size:12; margin:0 0 10 0; color:#999999; display:block; background-color:#ff9900;">
+                            </block>
+                            <block order="2"
+                                   name="product-title"
+                                   renderer="Glugox\PDF\Model\Renderer\Block\Product\Title"
+                                   style="width:370; font-size:24; font-weight:bold; line-spacing:10; margin:0 0 10 0; background-color:#00ff00;">
+                            </block>
+                            <block order="3"
+                                   name="product-sku"
+                                   renderer="Glugox\PDF\Model\Renderer\Block\Product\Sku"
+                                   style="width:370; font-size:12; color:#999999; display:block; background-color:#ffff00;">
+                            </block>
+                        </container>
+                        <container order="2" name="price-container" style="float:right; width:100;">
+                            <block order="1"
+                                   name="product-price"
+                                   renderer="Glugox\PDF\Model\Renderer\Block\Product\Price"
+                                   style="width:100; font-size:22; text-align:top right; display:block; background-color:#f7f7f7;">
+                            </block>
+                        </container>
+                        <container order="3" name="media-container">
+                            <block order="1" renderer="Glugox\PDF\Model\Renderer\Block\Product\Media" name="media"
+                                   style="background-color:#f7f7f7; width:250; float:left; display:block; margin:10 0 0 0;">
+                            </block>
+                            <block order="2" renderer="Glugox\PDF\Model\Renderer\Block\Renderer" name="gallery"
+                                   style="background-color:#cccccc; width:250; float:right; display:block; margin:10 0 0 0;">
+                            </block>
+                        </container>
+                        <container order="4" name="desc-container">
+                            <block order="1" renderer="Glugox\PDF\Model\Renderer\Block\Product\Description" name="description"
+                                   style="background-color:#f7f7f7; display:block; color:#333333; margin:20 0 0 0; line-spacing:10; font-size:13;">
+                            </block>
+                        </container>
+                        <container order="5" name="attr-container" style="margin:20 0 0 0">
+                            <block order="1" renderer="Glugox\PDF\Model\Renderer\Block\Product\Attributes" name="attributes"
+                                   style="background-color:#f7f7f7; color:#333333; margin:20 0 0 0; display:block; line-spacing:16; font-size:13;">
+                            </block>
+                        </container>
                     </container>
                 </container>
             </container>

@@ -11,8 +11,11 @@
 namespace Glugox\PDF\Model\Page;
 
 use Glugox\PDF\Exception\PDFException;
+use Glugox\PDF\Model\Layout\Layout;
 use Glugox\PDF\Model\Renderer\Data\Style;
+use Glugox\PDF\Model\Renderer\Element;
 use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\ResourceModel\Product\Collection;
 
 
 class Config extends \Magento\Framework\DataObject
@@ -97,6 +100,12 @@ class Config extends \Magento\Framework\DataObject
     const EVENT_ELEMENT_RENDER_END    = 'glugox_pdf_element_render_end';
 
     /**
+     * Default
+     */
+    const BLOCK_DEFAULT_HEIGHT = 0;
+    const CONTAINER_DEFAULT_HEIGHT = 0;
+
+    /**
      * Config data loader
      *
      * @var \Magento\Config\Model\Config\Loader
@@ -128,6 +137,12 @@ class Config extends \Magento\Framework\DataObject
      */
     protected $_currentRenderingElement = null;
 
+
+    /**
+     * @var array
+     */
+    protected $_renderedElements = [];
+
     /**
      * @var string
      */
@@ -156,6 +171,28 @@ class Config extends \Magento\Framework\DataObject
      */
     protected $_eventManager = null;
 
+
+    /**
+     * @var \Magento\Framework\ObjectManagerInterface
+     */
+    protected $_objectManeger = null;
+
+
+    /** @var  \Glugox\PDF\Helper\Data */
+    protected $_helper;
+
+
+    /**
+     * @var \Magento\Catalog\Model\Product
+     */
+    protected $_product = null;
+
+
+    /**
+     * @var \Magento\Catalog\Model\ResourceModel\Product\Collection
+     */
+    protected $_productCollection = null;
+
     /**
      * Config constructor.
      * @param \Glugox\PDF\Model\Layout\LayoutInterface $layout
@@ -166,13 +203,17 @@ class Config extends \Magento\Framework\DataObject
         \Glugox\PDF\Model\Page\State $state,
         \Magento\Config\Model\Config\Loader $configLoader,
         \Glugox\PDF\Model\Renderer\Data\BoundingBoxFactory $boundingBoxFactory,
-        \Magento\Framework\Event\ManagerInterface $eventManager
+        \Magento\Framework\Event\ManagerInterface $eventManager,
+        \Magento\Framework\ObjectManagerInterface $objectManager,
+        \Glugox\PDF\Helper\Data $helper
     ) {
         $this->layout = $layout;
         $this->_state = $state;
         $this->_configLoader = $configLoader;
         $this->_boundingBoxFactory = $boundingBoxFactory;
         $this->_eventManager = $eventManager;
+        $this->_objectManeger = $objectManager;
+        $this->_helper = $helper;
 
         $this->load();
     }
@@ -196,6 +237,27 @@ class Config extends \Magento\Framework\DataObject
         return $this;
 
     }
+
+
+    /**
+     * Initializes the zend pdf instance and
+     * prepares it for rendering.
+     *
+     */
+    public function render()
+    {
+        
+        $rootRenderer = $this->getLayout()->getRootRenderer();
+        $rootRenderer->initialize($this);
+
+        $rendered = $rootRenderer->render();
+        while (Element::NEW_PAGE_FLAG === $rendered){
+            $rendered = $this->renderOnNewPage();
+        }
+
+        return $rendered;
+    }
+    
 
     /**
      * Object data getter
@@ -240,15 +302,33 @@ class Config extends \Magento\Framework\DataObject
         switch ($event){
             case self::EVENT_ELEMENT_RENDER_START:
                 $this->setCurrentRenderingElement($element);
+                $this->getLayout()->getRootRenderer()->updateLayout();
 
                 break;
             case self::EVENT_ELEMENT_RENDER_END:
-                $this->getLayout()->getRootRenderer()->updateLayout();
+                $this->addRenderedElement($element);
+                //$this->getLayout()->getRootRenderer()->updateLayout();
 
                 break;
             default:
                 //
         }
+    }
+
+
+    /**
+     * @return \Glugox\PDF\Helper\Data
+     */
+    public function getHelper(){
+        return $this->_helper;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getStoreName(){
+        return $this->getHelper()->getStoreName();
     }
 
 
@@ -272,6 +352,14 @@ class Config extends \Magento\Framework\DataObject
 
 
     /**
+     * @param \Glugox\PDF\Model\Renderer\RendererInterface $element
+     */
+    public function addRenderedElement( \Glugox\PDF\Model\Renderer\RendererInterface $element){
+        $this->_renderedElements[] = $element->getName();
+    }
+
+
+    /**
      * Create new page and assign to PDF object
      *
      * @param  array $settings
@@ -283,11 +371,29 @@ class Config extends \Magento\Framework\DataObject
         $pdf = $rootRenderer->getPdf();
 
         $page = $pdf->newPage($this->getPageSize());
+        $rootRenderer->getStyle()->applyToPage($page);
+
         $pdf->pages[] = $page;
 
         $this->getState()->setX(0)->setY(0);
 
+        $rootRenderer->setPdfPage($page);
+        $rootRenderer->handleNewPage();
+        
+        
+        
+
         return $page;
+    }
+
+
+    /**
+     * @return \Zend_Pdf
+     */
+    public function renderOnNewPage(){
+
+        $this->newPage();
+        return $this->getLayout()->getRootRenderer()->render();
     }
 
     /**
@@ -365,40 +471,47 @@ class Config extends \Magento\Framework\DataObject
     public function createNewBoundingBoxFor( \Glugox\PDF\Model\Renderer\RendererInterface $element ){
 
         $style = $element->getStyle();
+        $name = $element->getName();
         $parentBB = $element->hasParent() ? $element->getParent()->getBoundingBox() : $element->getConfig()->getBoundingBox();
-
 
         /**
          * Depending on position is absolute or relative
          * calculate real position of the element, using its
          * parent.
          */
+        $newMaxWidth = $parentBB->getInnerWidth();
+        //$newMaxHeight = $parentBB->getInnerHeight();
 
-        $newMaxWidth = $parentBB->getWidth();
-        $newMaxHeight = $parentBB->getHeight();
         $relX = 0; // relative position
         $relY = 0; // relative position
 
-        if( $element->hasParent() ){
-            $parrentPadding = $element->getParent()->getStyle()->get(Style::STYLE_PADDING);
-            $margin = $element->getStyle()->get(Style::STYLE_MARGIN);
-            $relX = $parrentPadding[3] + $margin[3]; // padding left + margin left
-            $relY = $parrentPadding[0] + $margin[0]; // padding top + margin top
-            $newMaxWidth -= ($parrentPadding[1]+$parrentPadding[3]+$margin[1]+$margin[3]); // minus horizontal parent padding + el margin
-            $newMaxHeight -= ($parrentPadding[0]+$parrentPadding[2]+$margin[0]+$margin[2]); // minus vertical parent padding + el margin
+        // block type based values
+        switch ($element->getType()){
+            case Layout::TYPE_BLOCK:
+                // occupy some height just to be visible
+                $newDefaultHeight = self::BLOCK_DEFAULT_HEIGHT;
+                break;
+            case Layout::TYPE_CONTAINER:
+                $newDefaultHeight = self::CONTAINER_DEFAULT_HEIGHT;
+                break;
+            default:
+                $newDefaultHeight = 1;
         }
+        $newDefaultWidth = $newMaxWidth;
 
         $x = $style->get(Style::STYLE_LEFT, 0) + $relX;
         $y = $style->get(Style::STYLE_TOP, 0) + $relY;
 
-        $width = $style->get(Style::STYLE_WIDTH, $newMaxWidth);
-        $height = $style->get(Style::STYLE_HEIGHT, $newMaxHeight);
-        if($width > $newMaxWidth){
+
+        $width = $style->get(Style::STYLE_WIDTH, $newDefaultWidth);
+        $height = $style->get(Style::STYLE_HEIGHT, $newDefaultHeight);
+        
+        /*if($width > $newMaxWidth){
             $width = $newMaxWidth;
         }
         if($height > $newMaxHeight){
             $height = $newMaxHeight;
-        }
+        }*/
 
         return $this->createNewBoundingBox( $x, $y, $width, $height, $element);
     }
@@ -421,6 +534,10 @@ class Config extends \Magento\Framework\DataObject
             throw new PDFException(__("Invalid page size definition : '%1'", $this->_pageSize));
         }
 
+        $boundingBox->setCanIncreaseHeight(false);
+        $boundingBox->setCanIncreaseWidth(false);
+
+
         return $boundingBox;
     }
 
@@ -438,7 +555,7 @@ class Config extends \Magento\Framework\DataObject
         $height,
         \Glugox\PDF\Model\Renderer\RendererInterface $element=null
     ){
-        return $this->_boundingBox = $this->_boundingBoxFactory
+        return $this->_boundingBoxFactory
             ->create([
                 'x'=> $x,
                 'y'=> $y,
@@ -459,4 +576,52 @@ class Config extends \Magento\Framework\DataObject
         }
         return$this->_boundingBox;
     }
+
+
+    /**
+     * @param string $styleSource
+     * @return \Glugox\PDF\Model\Renderer\Data\Style
+     */
+    public function createStyle( $styleSource, \Glugox\PDF\Model\Renderer\RendererInterface $element ){
+        $style = $this->_objectManeger->create('Glugox\PDF\Model\Renderer\Data\Style', ['source'=>$styleSource, 'element'=>$element]);
+        return $style;
+    }
+
+    /**
+     * @return Product
+     */
+    public function getProduct()
+    {
+        return $this->_product;
+    }
+
+    /**
+     * @param Product $product
+     * @return \Glugox\PDF\Model\Page\Config
+     */
+    public function setProduct(Product $product)
+    {
+        $this->_product = $product;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getProductCollection()
+    {
+        return $this->_productCollection;
+    }
+
+    /**
+     * @param Collection $productCollection
+     * @return \Glugox\PDF\Model\Page\Config
+     */
+    public function setProductCollection(Collection $productCollection)
+    {
+        $this->_productCollection = $productCollection;
+        return $this;
+    }
+
+
 }

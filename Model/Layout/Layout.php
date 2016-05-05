@@ -35,11 +35,12 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
     const ATTRIBUTE_KEY_RENDERER   = 'renderer';
     const ATTRIBUTE_KEY_ORDER      = 'order';
     const ATTRIBUTE_KEY_STYLE      = 'style';
+    const ATTRIBUTE_KEY_SRC        = 'src';
     const ATTRIBUTE_KEY_PARENT     = 'parent'; // parent can not be set in xml (not in self::DEFAULT_ATTRIBUTES), but it is processed by reading parent node.
     const ATTRIBUTE_KEY_TYPE       = 'type'; // type can not be set in xml attributed, it is xml node name, (not in self::DEFAULT_ATTRIBUTES), but it is processed by reading parent node.
 
 
-    const DEFAULT_ATTRIBUTES = [self::ATTRIBUTE_KEY_NAME, self::ATTRIBUTE_KEY_RENDERER, self::ATTRIBUTE_KEY_ORDER, self::ATTRIBUTE_KEY_STYLE];
+    const DEFAULT_ATTRIBUTES = [self::ATTRIBUTE_KEY_NAME, self::ATTRIBUTE_KEY_RENDERER, self::ATTRIBUTE_KEY_ORDER, self::ATTRIBUTE_KEY_STYLE, self::ATTRIBUTE_KEY_SRC];
 
 
     /**
@@ -462,8 +463,9 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
         $order          = isset( $data[self::KEY_ATTRIBUTES][self::ATTRIBUTE_KEY_ORDER] )    ? (int) $data[self::KEY_ATTRIBUTES][self::ATTRIBUTE_KEY_ORDER] : 0;
         $type           = isset( $data[self::KEY_ATTRIBUTES][self::ATTRIBUTE_KEY_TYPE] )     ? $data[self::KEY_ATTRIBUTES][self::ATTRIBUTE_KEY_TYPE]        : null;
         $style          = isset( $data[self::KEY_ATTRIBUTES][self::ATTRIBUTE_KEY_STYLE] )    ? $data[self::KEY_ATTRIBUTES][self::ATTRIBUTE_KEY_STYLE]       : null;
+        $src            = isset( $data[self::KEY_ATTRIBUTES][self::ATTRIBUTE_KEY_SRC] )      ? $data[self::KEY_ATTRIBUTES][self::ATTRIBUTE_KEY_SRC]         : null;
 
-        $defaultArguments = [self::ATTRIBUTE_KEY_ORDER => $order, self::ATTRIBUTE_KEY_STYLE => $style];
+        $defaultArguments = [self::ATTRIBUTE_KEY_TYPE=> $type, self::ATTRIBUTE_KEY_ORDER => $order, self::ATTRIBUTE_KEY_STYLE => $style, self::ATTRIBUTE_KEY_SRC => $src ];
 
         switch ($type){
             case self::TYPE_CONTAINER:

@@ -232,7 +232,7 @@ class Data extends AbstractHelper {
     /**
      * Returns PDF provider
      *
-     * @return Glugox\PDF\Model\Provider\PDF\ProviderInterface
+     * @return \Glugox\PDF\Model\Provider\PDF\ProviderInterface
      */
     public function getPDFProvider() {
         return $this->_objectManager->get("Glugox\PDF\Model\Provider\PDF\ProviderInterface");

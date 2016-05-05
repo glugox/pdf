@@ -97,4 +97,30 @@ interface RendererInterface
      */
     public function setBoundingBox(\Glugox\PDF\Model\Renderer\Data\BoundingBox $boundingBox);
 
+    /**
+     * Returns true if this element is block type element.
+     *
+     * @return boolean
+     */
+    public function isBlock();
+
+
+    /**
+     * Returns true if this element is container type element.
+     *
+     * @return boolean
+     */
+    public function isContainer();
+
+    /**
+     * @return boolean
+     */
+    public function getIsRendered();
+
+    /**
+     * @param boolean $isRendered
+     * @return \Glugox\PDF\Model\Renderer\RendererInterface
+     */
+    public function setIsRendered($isRendered);
+
 }

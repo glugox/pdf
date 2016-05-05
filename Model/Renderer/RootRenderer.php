@@ -29,14 +29,17 @@ class RootRenderer extends \Glugox\PDF\Model\Renderer\Container\AbstractRenderer
         }
 
         $this->setConfig($config);
+        parent::initialize();
         
         $this->_pdf = new \Zend_Pdf;
-        $this->_pdfPage = $this->getConfig()->newPage();
+        $this->getConfig()->newPage();
 
-        parent::initialize();
+
 
         return $this;
     }
+
+
 
 
     /**

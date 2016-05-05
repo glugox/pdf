@@ -29,13 +29,9 @@ class ProductPdf extends AbstractHelper
      */
     public function prepareAndRender(Result $resultPage, Product $product, Action $controller)
     {
-        $pageConfig = $resultPage->getConfig();
-
-        /** @var \Glugox\PDF\Model\Renderer\RootRendererInterface $rootRenderer */
-        $rootRenderer = $pageConfig->getLayout()->getRootRenderer();
-
-        $pdf = $rootRenderer->initialize($pageConfig)
-            //->setDebugMode(true)
+        
+        $pdf = $resultPage->getConfig()
+            ->setProduct($product)
             ->render();
 
         $resultPage->setPdf($pdf);

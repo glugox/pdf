@@ -269,7 +269,7 @@ class PDFService implements PDFServiceInterface {
             $this->_helper->info($this->getProductsProvider()->getError(), true);
         } else {
 
-            $this->_helper->info("Fond " . \count($products) . " products.");
+            $this->_helper->info("Found " . \count($products) . " products.");
             $pdfResult = $this->_helper->getPDFProvider()->create($products, $pdfResult);
         }
 
@@ -294,7 +294,7 @@ class PDFService implements PDFServiceInterface {
             $this->_helper->info($this->getProductsProvider()->getError(), true);
         } else {
 
-            $this->_helper->info("Fond " . \count($products) . " products.");
+            $this->_helper->info("Found " . \count($products) . " products.");
             $pdfResult = $this->_helper->getPDFProvider()->create($products, $pdfResult);
         }
 
@@ -366,7 +366,7 @@ class PDFService implements PDFServiceInterface {
      *
      * @param int $pdfId
      * @return PDFModel
-     * @throws Glugox\PDF\Exception\PDFException
+     * @throws \Glugox\PDF\Exception\PDFException
      */
     protected function _loadById($pdfId) {
         $pdf = $this->_pdfFactory->create()->load($pdfId);
@@ -382,7 +382,7 @@ class PDFService implements PDFServiceInterface {
      *
      * @param string $name
      * @return void
-     * @throws Glugox\PDF\Exception\PDFException
+     * @throws \Glugox\PDF\Exception\PDFException
      */
     private function _checkPDFByName($name) {
         $pdf = $this->_pdfFactory->create()->load($name, 'name');

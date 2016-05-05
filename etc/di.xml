@@ -24,4 +24,9 @@
             <argument name="fileSource" xsi:type="object">Magento\Framework\View\Layout\File\Collector\Aggregated\Proxy</argument>
         </arguments>
     </type>
+    <type name="Glugox\PDF\Model\Renderer\RootRenderer">
+        <arguments>
+            <argument name="type" xsi:type="string">container</argument>
+        </arguments>
+    </type>
 </config>
