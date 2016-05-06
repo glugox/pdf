@@ -91,9 +91,9 @@ abstract class Element implements RendererInterface
      * the element is, ex textarea source text or
      * src image for image block
      *
-     * @var string
+     * @var mixed
      */
-    protected $_src = '';
+    protected $_src = null;
 
 
     /**
@@ -132,13 +132,19 @@ abstract class Element implements RendererInterface
 
 
     /**
+     * @var array
+     */
+    protected $_estimatedSize;
+
+
+    /**
      * Element constructor.
      *
      * @param string $type
      * @param int $order
      * @param string $style
      */
-    public function __construct($type, $order = 0, $style = '', $src = '')
+    public function __construct($type, $order = 0, $style = '', $src = null)
     {
         $this->_type = $type;
         $this->_order = $order;
@@ -157,7 +163,7 @@ abstract class Element implements RendererInterface
         // it is important that we call set style on initialize as for inheriting
         // styles, the element must have parent already set if exists anyway.
         $this->setStyle($this->_styleSource);
-        $this->_src = $this->_parseSource($this->_src);
+        $this->_parseSource();
     }
 
 
@@ -481,17 +487,15 @@ abstract class Element implements RendererInterface
         if ($this->getStyle()->canDisplay()) {
 
             // checking values
-            if ($this->isBlock()) {
+            //if ($this->isBlock()) {
 
-                $sizeResult = $this->checkSize();
-                if (true === $sizeResult) {
-                    //
-                } else if ($sizeResult === self::NEW_PAGE_FLAG) {
-                    return self::NEW_PAGE_FLAG;
-                } else {
-                    // exception is thrown
-                }
+            $sizeResult = $this->checkSize();
+            if (true === $sizeResult) {
+                //
+            } else if ($sizeResult === self::NEW_PAGE_FLAG) {
+                return self::NEW_PAGE_FLAG;
             }
+            // }
 
             // real rendering
             $renderResult = $this->_render();
@@ -507,8 +511,6 @@ abstract class Element implements RendererInterface
             }
 
         }
-
-
 
 
         // rendering end
@@ -657,7 +659,7 @@ abstract class Element implements RendererInterface
     }
 
     /**
-     * @return string
+     * @return mixed
      */
     public function getSrc()
     {
@@ -676,20 +678,25 @@ abstract class Element implements RendererInterface
     /**
      * @param $src
      */
-    protected function _parseSource($src)
+    protected function _parseSource()
     {
-        if (!empty($src)) {
-            if (strpos($src, "config:") === 0) {
-                $configPath = substr($src, 7);
+        if (!empty($this->_src)) {
+            if (is_string($this->_src) && strpos($this->_src, "config:") === 0) {
+                $configPath = substr($this->_src, 7);
                 $config = $this->getConfig();
                 if (\method_exists($config, $configPath)) {
-                    $src = \call_user_func_array([$config, $configPath], []);
+                    $this->_src = \call_user_func_array([$config, $configPath], []);
                 } else {
-                    $src = $this->getConfig()->getHelper()->getConfig($configPath);
+                    $this->_src = $this->getConfig()->getHelper()->getConfig($configPath);
+                }
+            } else if (is_string($this->_src) && strpos($this->_src, "parent:") === 0) {
+                $configPath = substr($this->_src, 7);
+                $parent = $this->getParent();
+                if ($parent && \method_exists($parent, $configPath)) {
+                    $this->_src = \call_user_func_array([$parent, $configPath], []);
                 }
             }
         }
-        return $src;
     }
 
 
@@ -704,6 +711,7 @@ abstract class Element implements RendererInterface
         $str = \strip_tags($str, '<a>');
         return \html_entity_decode($str);
     }
+
 
     /**
      * @return array

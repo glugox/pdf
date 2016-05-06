@@ -36,4 +36,9 @@ interface RendererInterface extends \Glugox\PDF\Model\Renderer\RendererInterface
      */
     public function hasChildren();
 
+    /**
+     * @return \Glugox\PDF\Model\Renderer\RendererInterface
+     */
+    public function setChildren($children);
+
 }

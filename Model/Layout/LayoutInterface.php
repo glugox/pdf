@@ -11,9 +11,21 @@
 namespace Glugox\PDF\Model\Layout;
 
 
+use Glugox\PDF\Model\Page\Config;
+
 interface LayoutInterface
 {
 
+
+    /**
+     * @return Config
+     */
+    public function getConfig();
+
+    /**
+     * @param Config $config
+     */
+    public function setConfig($config);
 
     /**
      * Create renderers using parent-child relations and

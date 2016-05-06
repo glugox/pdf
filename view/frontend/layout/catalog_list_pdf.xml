@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * This file is part of Glugox.
+ *
+ * (c) Glugox <glugox@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="../../../etc/page_configuration.xsd">
+    <head>
+        <meta name="title" content="Test Title"></meta>
+    </head>
+    <body>
+        <container name="root">
+            <container name="wrapper" order="1" style="">
+                <container name="product-page" style="background-color:#ffffff; padding:35;">
+                    <container order="1" name="header-wrapper" style="padding:0; margin:0 0 20 0;">
+                        <block order="1" renderer="Glugox\PDF\Model\Renderer\Block\Logo" name="logo"
+                               style="text-align:top left; background-color:#cc00ee; height:45; float:left; display:block; margin:0;">
+                        </block>
+                        <block order="2" src="config:getStoreName" renderer="Glugox\PDF\Model\Renderer\Block\TextArea"
+                               name="store-name1"
+                               style="width:100; font-size:12; float:right; height:45; display:block; text-align:bottom right; color:#333333; background-color:#ccffee; margin:0">
+                        </block>
+                        <block order="3" name="header-line" renderer="Glugox\PDF\Model\Renderer\Block\Box"
+                               style="height:1; padding:0; color:#f7f7f7; margin:10 0">
+                        </block>
+                    </container>
+                    <container renderer="Glugox\PDF\Model\Renderer\Container\Repeater" order="2" name="product-container" src="config:getProductItems">
+                        <container order="1"
+                               name="repeater-item"
+                               renderer="Glugox\PDF\Model\Renderer\Container\Product\Item"
+                               style="width:126; float:left; margin:0 7 20 0; font-size:12; color:#999999; display:block; background-color:#ff0000;">
+                            <block order="1" renderer="Glugox\PDF\Model\Renderer\Block\Product\Media" name="media" style="width:126;"></block>
+                            <block order="2"
+                                   name="title"
+                                   renderer="Glugox\PDF\Model\Renderer\Block\Product\Title"
+                                   style="width:126; font-size:14; color:#333333; font-weight:normal; line-spacing:4; margin:8 0 0 0; padding:0 5; background-color:#00ff00;">
+                            </block>
+                            <block order="3"
+                                   name="price"
+                                   renderer="Glugox\PDF\Model\Renderer\Block\Product\Price"
+                                   style="width:126; font-size:14; color:#020202; font-weight:bold; display:block; margin:8 0 0 0; padding:0 5; background-color:#f7f7f7;">
+                            </block>
+                        </container>
+                    </container>
+                </container>
+            </container>
+        </container>
+    </body>
+</page>

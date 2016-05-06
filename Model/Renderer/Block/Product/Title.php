@@ -22,7 +22,13 @@ class Title extends MultilineText
     public function initialize(\Glugox\PDF\Model\Page\Config $config = null)
     {
         parent::initialize($config);
-        $name = $this->getConfig()->getProduct()->getName();
+        $product = $this->getConfig()->getProduct();
+        if(!$product || !$product instanceof \Magento\Catalog\Model\Product){
+            if($this->getParent()){
+                $product = $this->getParent()->getSrc();
+            }
+        }
+        $name = $product->getName();
         $this->_src = $this->prepareTextForDrawing($name);
     }
 

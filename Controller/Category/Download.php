@@ -24,6 +24,7 @@ class Download extends \Glugox\PDF\Controller\FrontController {
      * @return \Magento\Framework\Controller\ResultInterface
      */
     public function execute() {
+
         $category = $this->_initCategory();
 
         if (!$category) {

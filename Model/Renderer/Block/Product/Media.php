@@ -34,6 +34,12 @@ class Media extends AbstractRenderer
     public function _render()
     {
         $product = $this->getConfig()->getProduct();
+        if(!$product || !$product instanceof \Magento\Catalog\Model\Product){
+           if($this->getParent()){
+               $product = $this->getParent()->getSrc();
+           }
+        }
+
         $bBox = $this->getBoundingBox();
         $helper = $this->getConfig()->getHelper();
         $style = $this->getStyle();
@@ -46,6 +52,9 @@ class Media extends AbstractRenderer
         $image = \Zend_Pdf_Image::imageWithPath($imagePath);
         $sizeFactor = $image->getPixelWidth() / $image->getPixelHeight();
 
+        /**
+         * Define maximums
+         */
         $maxWidth = $helper->getConfigObject()->getSingleImageMaxWidth();
         $maxHeight = $helper->getConfigObject()->getSingleImageMaxHeight();
 
@@ -56,6 +65,10 @@ class Media extends AbstractRenderer
             $maxHeight = $maxHeight ? \min($maxHeight, $bBox->getInnerHeight()) : $bBox->getInnerHeight();
         }
 
+        /**
+         * Prefer width definition for calculation
+         * of definite size.
+         */
         if ($maxWidth) {
             $imageWidth = $maxWidth;
             $imageHeight = $imageWidth / $sizeFactor;
@@ -71,12 +84,18 @@ class Media extends AbstractRenderer
             $imageWidth = $sizeFactor * $imageHeight;
         }
 
+        /**
+         * Define position
+         */
         $x1 = $bBox->getAbsX1() + $padding[3];
         $y1 = $bBox->getAbsY1() - $imageHeight - $padding[0];
 
-        // write image to page
+        // Write image to page
         $this->getPdfPage()->drawImage($image, $x1, $y1, $x1 + $imageWidth, $y1 + $imageHeight);
 
+        /**
+         * Update bounding box size
+         */
         $bBox->setWidth($imageWidth)->setHeight($imageHeight);
     }
 

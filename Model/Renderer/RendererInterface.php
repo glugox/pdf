@@ -123,4 +123,25 @@ interface RendererInterface
      */
     public function setIsRendered($isRendered);
 
+    /**
+     * @return mixed
+     */
+    public function getSrc();
+
+    /**
+     * @param string $src
+     */
+    public function setSrc($src);
+
+    /**
+     * @return int
+     */
+    public function getOrder();
+
+    /**
+     * @param int $order
+     * @return \Glugox\PDF\Model\Renderer\RendererInterface
+     */
+    public function setOrder($order);
+
 }

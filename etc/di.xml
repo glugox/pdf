@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/ObjectManager/etc/config.xsd">
-    <preference for="Glugox\PDF\Model\Provider\PDF\ProviderInterface" type="Glugox\PDF\Model\Provider\DefaultPDFProvider" />
+    <preference for="Glugox\PDF\Model\Provider\PDF\ProviderInterface" type="Glugox\PDF\Model\Provider\LayoutPDFProvider" />
     <preference for="Glugox\PDF\Model\Provider\Products\ProviderInterface" type="Glugox\PDF\Model\Provider\Layer\Products" />
     <preference for="Glugox\PDF\Api\PDFServiceInterface" type="Glugox\PDF\Model\PDFService" />
     <preference for="Glugox\PDF\Model\Layout\LayoutInterface" type="Glugox\PDF\Model\Layout\Layout" />

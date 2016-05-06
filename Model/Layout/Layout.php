@@ -12,6 +12,7 @@ namespace Glugox\PDF\Model\Layout;
 
 
 use Glugox\PDF\Exception\PDFException;
+use Glugox\PDF\Model\Page\Config;
 use Glugox\PDF\Model\Renderer\RendererFactory;
 use Magento\Framework\Filesystem\File\ReadFactory;
 use Magento\Framework\Filesystem\DriverPool;
@@ -73,6 +74,12 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
      * @var namespace \Glugox\PDF\Model\Layout\Data\Structure
      */
     protected $_structure;
+
+
+    /**
+     * @var \Glugox\PDF\Model\Page\Config
+     */
+    protected $_config;
 
     /**
      * @var \Magento\Framework\View\Design\ThemeInterface
@@ -168,6 +175,25 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
         return $this->_structure;
     }
 
+    /**
+     * @return Config
+     */
+    public function getConfig()
+    {
+        return $this->_config;
+    }
+
+    /**
+     * @param Config $config
+     */
+    public function setConfig($config)
+    {
+        $this->_config = $config;
+    }
+
+
+    
+
 
     /**
      * Load layout
@@ -185,8 +211,20 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
         $layoutStr = '';
 
         $theme = $this->_getPhysicalTheme($this->theme);
-        $updateFiles = $this->_fileSource->getFiles($theme, '*_pdf.xml');
+        $filesPattern = '*_pdf.xml';
 
+        switch ($this->getConfig()->getPdfType()){
+            case Config::PDF_TYPE_PRODUCT:
+                $filesPattern = 'catalog_product_pdf.xml';
+                break;
+            case Config::PDF_TYPE_LIST:
+                $filesPattern = 'catalog_list_pdf.xml';
+                break;
+            default:
+                //
+        }
+
+        $updateFiles = $this->_fileSource->getFiles($theme, $filesPattern);
         foreach ($updateFiles as $file) {
 
             $fileReader = $this->_readFactory->create($file->getFilename(), DriverPool::FILE);

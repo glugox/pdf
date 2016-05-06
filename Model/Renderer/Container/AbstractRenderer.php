@@ -24,6 +24,17 @@ class AbstractRenderer extends Element implements RendererInterface
 
 
     /**
+     * @var \Glugox\PDF\Model\Renderer\RendererInterface
+     */
+    protected $_lastRenderedItem = null;
+
+    /**
+     * @var \Glugox\PDF\Model\Renderer\RendererInterface
+     */
+    protected $_currentRenderingItem = null;
+
+
+    /**
      * Initializes data needed for rendering
      * of this element.
      */
@@ -264,10 +275,13 @@ class AbstractRenderer extends Element implements RendererInterface
      */
     public function render()
     {
-        parent::render();
-
+        $parentRenderResult = parent::render();
         // mark not rendered yet, in parent::render was set to true
         $this->setIsRendered(false);
+
+        if(Element::NEW_PAGE_FLAG === $parentRenderResult){
+            return $parentRenderResult;
+        }
 
         $minY = null;
         $maxY = null;
@@ -276,7 +290,10 @@ class AbstractRenderer extends Element implements RendererInterface
             foreach ($this->getChildren() as $child) {
                 if(!$child->getIsRendered()){
 
+                    $this->_currentRenderingItem = $child;
                     $rendered = $child->render();
+                    $this->_lastRenderedItem = $child;
+
                     $childMargin = $child->getStyle()->get(Style::STYLE_MARGIN);
                     if($child->getStyle()->canDisplay()){
                         $minY = null === $minY ? $child->getBoundingBox()->getAbsY2() - $childMargin[0] : \min( $minY, $child->getBoundingBox()->getAbsY2() - $childMargin[0] );
@@ -298,6 +315,22 @@ class AbstractRenderer extends Element implements RendererInterface
         }
         
         return $this->getPdf();
+    }
+
+
+    /**
+     * @return \Glugox\PDF\Model\Renderer\RendererInterface
+     */
+    public function getLastRenderedItem(){
+        return $this->_lastRenderedItem;
+    }
+
+
+    /**
+     * @return \Glugox\PDF\Model\Renderer\RendererInterface
+     */
+    public function getCurrentRenderedItem(){
+        return $this->_currentRenderingItem;
     }
 
 
@@ -328,6 +361,19 @@ class AbstractRenderer extends Element implements RendererInterface
      */
     public function getChildren(){
         return $this->_children;
+    }
+
+
+    /**
+     * @param \Glugox\PDF\Model\Renderer\RendererInterface[]
+     * @return \Glugox\PDF\Model\Renderer\RendererInterface
+     */
+    public function setChildren($children){
+        $this->_children = $children;
+        foreach ($children as $child) {
+            $child->setParent($this);
+        }
+        return $this;
     }
 
     /**
@@ -363,6 +409,30 @@ class AbstractRenderer extends Element implements RendererInterface
                     $index = \array_search($child, $this->_children);
                     unset($this->_children[$index]);
                 }
+            }
+        }
+    }
+
+    /**
+     * When an object is cloned, PHP 5 will perform a shallow copy of all of the object's properties.
+     * Any properties that are references to other variables, will remain references.
+     * Once the cloning is complete, if a __clone() method is defined,
+     * then the newly created object's __clone() method will be called, to allow any necessary properties that need to be changed.
+     * NOT CALLABLE DIRECTLY.
+     *
+     * @return mixed
+     * @link http://php.net/manual/en/language.oop5.cloning.php
+     */
+    function __clone()
+    {
+        $clonedChildren = [];
+        if($this->hasChildren()){
+            foreach ($this->getChildren() as $child) {
+                $clonedChildren[] = clone $child;
+            }
+            $this->_children = [];
+            foreach ($clonedChildren as $cChild) {
+                $this->addChild($cChild);
             }
         }
     }

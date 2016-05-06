@@ -16,14 +16,11 @@ use Glugox\PDF\Model\Renderer\Data\Style;
 
 class Attributes extends AbstractRenderer
 {
-
-
-    /**
-     * @var array
-     */
-    protected $_estimatedSize;
+    
 
     /**
+     * It actually sets the size of the block to estimated size!
+     *
      * @return array
      */
     public function _estimateSize(){

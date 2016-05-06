@@ -41,6 +41,11 @@ class Download extends \Glugox\PDF\Controller\FrontController {
         $pdfName = 'product-' . $product->getSku() . '_' . (int)$this->_pdfHelper->getSession()->getCustomerId();
 
         if ($pdfModel->getId()) {
+            /**
+             * PDF Model is magento db model type that stores information about the generated pdf.
+             * It calls the PDFService which gets requested products chooses pdf provider to generate the PDF (Zend_Pdf) instance
+             * with render() method.
+             */
             $pdfResult = $pdfModel->createPdf($this->_service);
             //$date = $this->_objectManager->get('Magento\Framework\Stdlib\DateTime\DateTime')->date('Y-m-d_H-i-s');
             return $this->_fileFactory->create($pdfName . '.pdf', $pdfResult->getPdf()->render(), DirectoryList::VAR_DIR, 'application/pdf');

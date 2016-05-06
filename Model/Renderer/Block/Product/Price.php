@@ -16,10 +16,45 @@ use Glugox\PDF\Model\Renderer\Block\MultilineText;
 class Price extends MultilineText
 {
 
+
+    /**
+     * If there is a discount, regular price is
+     * on the first and discounted price on the
+     * second line
+     */
+    const MODE_2_LINES = 'mode_2_lines';
+    /**
+     * If there is a discount, both regular price
+     * and discounted prices are in one line.
+     */
+    const MODE_1_LINE = 'mode_1_line';
+
     /**
      * @var \Magento\Framework\Pricing\PriceCurrencyInterface
      */
     protected $_priceCurrency;
+
+    /**
+     * @var string
+     */
+    protected $_mode = self::MODE_2_LINES;
+
+    /**
+     * @return string
+     */
+    public function getMode()
+    {
+        return $this->_mode;
+    }
+
+    /**
+     * @param string $mode
+     */
+    public function setMode($mode)
+    {
+        $this->_mode = $mode;
+    }
+
 
 
     /**
@@ -44,6 +79,12 @@ class Price extends MultilineText
         parent::initialize($config);
 
         $product = $this->getConfig()->getProduct();
+        if(!$product || !$product instanceof \Magento\Catalog\Model\Product){
+            if($this->getParent()){
+                $product = $this->getParent()->getSrc();
+            }
+        }
+
         $style = $this->getStyle();
         $lineHeight = $style->getLineHeight();
 
@@ -56,7 +97,7 @@ class Price extends MultilineText
         $this->_textWidth = $style->widthForStringUsingFontSize($regularPriceFormatted);
         $this->_textHeight = $lineHeight;
 
-        $this->_lines[] = $regularPriceFormatted;
+        $this->_lines[0] = $regularPriceFormatted;
 
         /**
          * Discounted price
@@ -66,9 +107,15 @@ class Price extends MultilineText
             $finalPrice = $priceInfoFinal->getValue();
             if ($finalPrice && $finalPrice < $regularPrice) {
                 $finalPriceFormatted = $this->_priceCurrency->format($finalPrice, false);
-                $this->_lines[] = $finalPriceFormatted;
-                $this->_textWidth = \max($this->_textWidth, $style->widthForStringUsingFontSize($finalPriceFormatted));
-                $this->_textHeight += $lineHeight;
+                if($this->_mode === self::MODE_2_LINES){
+                    $this->_lines[1] = $finalPriceFormatted;
+                    $this->_textWidth = \max($this->_textWidth, $style->widthForStringUsingFontSize($finalPriceFormatted));
+                    $this->_textHeight += $lineHeight;
+                }else{
+                    $this->_lines[0] = $this->_lines[0] . '&nbspc;&nbspc;' . $finalPriceFormatted;
+                    $this->_textWidth = $style->widthForStringUsingFontSize($this->_lines[0]);
+                }
+
 
                 $discountedColor = "#cccccc";
                 $this->_lineColors = [

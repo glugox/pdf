@@ -10,13 +10,14 @@
 
 namespace Glugox\PDF\Helper;
 
+use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Glugox\PDF\Model\Page\Result;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\App\Action\Action;
 
 
-class ProductPdf extends AbstractHelper
+class CollectionPdf extends AbstractHelper
 {
 
     /**
@@ -27,11 +28,11 @@ class ProductPdf extends AbstractHelper
      * @param \Magento\Framework\App\Action\Action $controller
      * @return \Glugox\PDF\Helper\ProductPdf
      */
-    public function prepareAndRender(Result $resultPage, Product $product)
+    public function prepareAndRender(Result $resultPage, Collection $collection)
     {
         
         $pdf = $resultPage->getConfig()
-            ->setProduct($product)
+            ->setProductCollection($collection)
             ->render();
 
         $resultPage->setPdf($pdf);

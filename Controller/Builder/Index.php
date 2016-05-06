@@ -29,7 +29,7 @@ class Index extends \Glugox\PDF\Controller\FrontController {
         try {
 
             $page = $this->_objectManager->create("\Glugox\PDF\Model\Page\Result");
-            $this->_productHelper->prepareAndRender($page, $product, $this);
+            $this->_productHelper->prepareAndRender($page, $product);
             return $this->_fileFactory->create('test.pdf', $page->getPdf()->render(), DirectoryList::VAR_DIR, 'application/pdf');
 
         } catch (\Exception $e) {

@@ -105,6 +105,13 @@ class Config extends \Magento\Framework\DataObject
     const BLOCK_DEFAULT_HEIGHT = 0;
     const CONTAINER_DEFAULT_HEIGHT = 0;
 
+
+    /**
+     * Pdf types
+     */
+    const PDF_TYPE_PRODUCT  = 'pdf_type_product';
+    const PDF_TYPE_LIST     = 'pdf_type_list';
+
     /**
      * Config data loader
      *
@@ -143,6 +150,12 @@ class Config extends \Magento\Framework\DataObject
      */
     protected $_renderedElements = [];
 
+
+    /**
+     * @var \Glugox\PDF\Model\Layout\LayoutInterface
+     */
+    protected $layout;
+
     /**
      * @var string
      */
@@ -150,11 +163,21 @@ class Config extends \Magento\Framework\DataObject
 
 
     /**
-     * Current rendering process state
+     * If we are rendering only one product -> product,
+     * If we are rendering multiple products -> list
      *
-     * @var \Glugox\PDF\Model\Page\State
+     * @var string
      */
-    protected $_state;
+    protected $_pdfType;
+
+    /**
+     * @return string
+     */
+    public function getPdfType()
+    {
+        return $this->_pdfType;
+    }
+
 
 
     /**
@@ -200,7 +223,6 @@ class Config extends \Magento\Framework\DataObject
      */
     public function __construct(
         \Glugox\PDF\Model\Layout\LayoutInterface $layout,
-        \Glugox\PDF\Model\Page\State $state,
         \Magento\Config\Model\Config\Loader $configLoader,
         \Glugox\PDF\Model\Renderer\Data\BoundingBoxFactory $boundingBoxFactory,
         \Magento\Framework\Event\ManagerInterface $eventManager,
@@ -208,13 +230,13 @@ class Config extends \Magento\Framework\DataObject
         \Glugox\PDF\Helper\Data $helper
     ) {
         $this->layout = $layout;
-        $this->_state = $state;
         $this->_configLoader = $configLoader;
         $this->_boundingBoxFactory = $boundingBoxFactory;
         $this->_eventManager = $eventManager;
         $this->_objectManeger = $objectManager;
         $this->_helper = $helper;
 
+        $this->layout->setConfig($this);
         $this->load();
     }
 
@@ -270,25 +292,6 @@ class Config extends \Magento\Framework\DataObject
     public function getData($key = '', $default = null)
     {
         return $this->hasData($key) ? parent::_getData($key) : $default;
-    }
-
-
-    /**
-     * @return \Glugox\PDF\Model\Page\State
-     */
-    public function getState()
-    {
-        return $this->_state;
-    }
-
-    /**
-     * @param \Glugox\PDF\Model\Page\State $state
-     * @return \Glugox\PDF\Model\Page\Config
-     */
-    public function setState($state)
-    {
-        $this->_state = $state;
-        return $this;
     }
 
 
@@ -375,13 +378,8 @@ class Config extends \Magento\Framework\DataObject
 
         $pdf->pages[] = $page;
 
-        $this->getState()->setX(0)->setY(0);
-
         $rootRenderer->setPdfPage($page);
         $rootRenderer->handleNewPage();
-        
-        
-        
 
         return $page;
     }
@@ -602,6 +600,10 @@ class Config extends \Magento\Framework\DataObject
     public function setProduct(Product $product)
     {
         $this->_product = $product;
+        if(!empty($this->_pdfType)){
+            throw new PDFException(__("PDF type is already set to '%1'!", $this->_pdfType));
+        }
+        $this->_pdfType = self::PDF_TYPE_PRODUCT;
         return $this;
     }
 
@@ -620,7 +622,19 @@ class Config extends \Magento\Framework\DataObject
     public function setProductCollection(Collection $productCollection)
     {
         $this->_productCollection = $productCollection;
+        if(!empty($this->_pdfType)){
+            throw new PDFException(__("PDF type is already set to '%1'!", $this->_pdfType));
+        }
+        $this->_pdfType = self::PDF_TYPE_LIST;
         return $this;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getProductItems(){
+        return $this->getProductCollection()->load();
     }
 
 

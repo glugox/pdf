@@ -76,6 +76,8 @@
             <xs:element ref="referenceContainer" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute type="elementNameType" name="name"/>
+        <xs:attribute type="blockRendererType" name="renderer" use="optional"/>
+        <xs:attribute type="xs:string" name="src" use="optional"/>
         <xs:attribute type="xs:string" name="label"/>
         <xs:attribute type="elementOutputType" name="output"/>
         <xs:attribute type="elementAliasType" name="as"/>
