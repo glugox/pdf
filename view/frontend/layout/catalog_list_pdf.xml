@@ -13,11 +13,12 @@
       xsi:noNamespaceSchemaLocation="../../../etc/page_configuration.xsd">
     <head>
         <meta name="title" content="Test Title"></meta>
+        <meta content="595:842:" name="size"></meta>
     </head>
     <body>
         <container name="root">
             <container name="wrapper" order="1" style="">
-                <container name="product-page" style="background-color:#ffffff; padding:35;">
+                <container name="product-page" style="background-color:#ffffff; padding:28 35;">
                     <container order="1" name="header-wrapper" style="padding:0; margin:0 0 20 0;">
                         <block order="1" renderer="Glugox\PDF\Model\Renderer\Block\Logo" name="logo"
                                style="text-align:top left; background-color:#cc00ee; height:45; float:left; display:block; margin:0;">
@@ -34,7 +35,7 @@
                         <container order="1"
                                name="repeater-item"
                                renderer="Glugox\PDF\Model\Renderer\Container\Product\Item"
-                               style="width:126; float:left; margin:0 7 20 0; font-size:12; color:#999999; display:block; background-color:#ff0000;">
+                               style="width:126; height:220; float:left; margin:0 7 10 0; font-size:12; color:#999999; display:block; background-color:#ff0000;">
                             <block order="1" renderer="Glugox\PDF\Model\Renderer\Block\Product\Media" name="media" style="width:126;"></block>
                             <block order="2"
                                    name="title"

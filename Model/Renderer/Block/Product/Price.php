@@ -111,20 +111,16 @@ class Price extends MultilineText
                     $this->_lines[1] = $finalPriceFormatted;
                     $this->_textWidth = \max($this->_textWidth, $style->widthForStringUsingFontSize($finalPriceFormatted));
                     $this->_textHeight += $lineHeight;
+                    $discountedColor = "#cccccc";
+                    $this->_lineColors = [
+                        0 => ["color"=>$discountedColor, "line-through"=>true]
+                    ];
                 }else{
-                    $this->_lines[0] = $this->_lines[0] . '&nbspc;&nbspc;' . $finalPriceFormatted;
+                    $this->_lines[0] = $this->_lines[0] . '  ' . $finalPriceFormatted;
                     $this->_textWidth = $style->widthForStringUsingFontSize($this->_lines[0]);
                 }
-
-
-                $discountedColor = "#cccccc";
-                $this->_lineColors = [
-                    0 => ["color"=>$discountedColor, "line-through"=>true]
-                ];
             }
         }
-
-
         $this->_src = '';
     }
 

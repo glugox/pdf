@@ -13,6 +13,7 @@
       xsi:noNamespaceSchemaLocation="../../../etc/page_configuration.xsd">
     <head>
         <meta name="title" content="Test Title"></meta>
+        <meta content="595:842:" name="size"></meta>
     </head>
     <body>
         <container name="root">

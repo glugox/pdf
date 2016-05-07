@@ -151,6 +151,7 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
             $this->load();
             $this->readElements();
             $this->generateElements();
+            $this->processConfigStyling();
         }
     }
 
@@ -441,6 +442,16 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
         }
 
 
+    }
+
+
+    /**
+     * Element styles can be set in the xml files, but if the user
+     * has set some styling in the admin config , than we will override
+     * the styles with the config values.
+     */
+    protected function processConfigStyling(){
+        $config = $this->getConfig();
     }
 
 

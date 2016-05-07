@@ -10,6 +10,7 @@
  */
 namespace Glugox\PDF\Test\Unit\Model;
 
+use Glugox\PDF\Model\PDFResult;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHelper;
 
 /**
@@ -43,6 +44,23 @@ class PDFServiceTest extends \PHPUnit_Framework_TestCase{
      * @var \Glugox\PDF\Helper\Data|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $_pdfHelperMock;
+
+    /**
+     * @var \Glugox\PDF\Helper\CollectionPdf|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $_collectionPdfHelperMock;
+
+    /**
+     * @var \Glugox\PDF\Helper\ProductPdf|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $_productPdfHelperMock;
+
+    /**
+     * @var \Glugox\PDF\Model\PDFResult|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $_pdfResultMock;
+
+
 
     /**
      *
@@ -93,6 +111,10 @@ class PDFServiceTest extends \PHPUnit_Framework_TestCase{
         $this->_pdfHelperMock->expects($this->any())->method("createPdfResult")->will($this->returnValue($pdfResult));
 
 
+        $this->_collectionPdfHelperMock = $this->getMockBuilder("Glugox\PDF\Helper\CollectionPdf")->disableOriginalConstructor()->getMock();
+        $this->_productPdfHelperMock = $this->getMockBuilder("Glugox\PDF\Helper\ProductPdf")->disableOriginalConstructor()->getMock();
+        $this->_pdfResultMock = $this->getMockBuilder("Glugox\PDF\Model\PDFResult")->disableOriginalConstructor()->getMock();
+
         //
         $this->_pdfHelperMock->expects($this->any())
                 ->method("info")
@@ -100,12 +122,17 @@ class PDFServiceTest extends \PHPUnit_Framework_TestCase{
 
         /**
          * PDF Provider actualy creates the pdf
+         *
+         *  \Magento\Framework\ObjectManagerInterface $objectManager,
+         *  \Glugox\PDF\Helper\ProductPdf $productHelper,
+         *  \Glugox\PDF\Helper\CollectionPdf $collectionHelper,
+         *  \Glugox\PDF\Model\PDFResult $pdfResult
          */
-        $this->_pdfProvider = $this->_objectManagerHelper->getObject("Glugox\PDF\Model\Provider\PDF", [
-            'helper' => $this->_pdfHelperMock,
-            'string' => $this->_objectManagerHelper->getObject("Magento\Framework\Stdlib\StringUtils"),
-            'filesystem' => $this->_objectManagerHelper->getObject("Magento\Framework\Filesystem"),
-            'localeDate' => $this->_objectManagerHelper->getObject("Magento\Framework\Stdlib\DateTime\Timezone"),
+        $this->_pdfProvider = $this->_objectManagerHelper->getObject("Glugox\PDF\Model\Provider\LayoutPDFProvider", [
+            'objectManager' => $this->_objectManagerHelper->getObject("Magento\Framework\ObjectManager\ObjectManager"),
+            'productHelper' => $this->_productPdfHelperMock,
+            'collectionHelper' => $this->_collectionPdfHelperMock,
+            'pdfResult' => $this->_pdfResultMock
         ]);
 
         $this->_pdfHelperMock->expects($this->any())->method("getPDFProvider")->will($this->returnValue($this->_pdfProvider));

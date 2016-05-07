@@ -40,7 +40,6 @@ class Logo extends Image
     public function initialize(\Glugox\PDF\Model\Page\Config $config = null)
     {
         parent::initialize($config);
-        //$this->getStyle()->set(Style::STYLE_DISPLAY, 'none');
     }
 
 

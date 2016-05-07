@@ -485,17 +485,13 @@ abstract class Element implements RendererInterface
         $bBox = $this->getBoundingBox();
 
         if ($this->getStyle()->canDisplay()) {
-
-            // checking values
-            //if ($this->isBlock()) {
-
+            
             $sizeResult = $this->checkSize();
             if (true === $sizeResult) {
                 //
             } else if ($sizeResult === self::NEW_PAGE_FLAG) {
                 return self::NEW_PAGE_FLAG;
             }
-            // }
 
             // real rendering
             $renderResult = $this->_render();
@@ -509,9 +505,7 @@ abstract class Element implements RendererInterface
             if ($this->isDebugMode()) {
                 //$this->_drawBoundingBox();
             }
-
         }
-
 
         // rendering end
         // set this is rendered

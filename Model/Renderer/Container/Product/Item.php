@@ -43,65 +43,13 @@ class Item extends \Glugox\PDF\Model\Renderer\Container\AbstractRenderer
         return $this->_estimatedSize;
     }
 
-    /**
-     * Updates children properties needed for rendering
-     * like bounding box (x,y,width,height) after page state
-     * is changed (like rendered new element)
-     *
-     * We are manipulating one repeater item children for all
-     * repeater items, so we need to re set the children to
-     * current repeater item on each update layout.
-     */
-    public function updateLayout()
-    {
-        if($this->hasChildren()){
-            $this->setChildren($this->getChildren());
-        }
-        parent::updateLayout();
-    }
-
-
-
+    
     /**
      * @return \Zend_Pdf $pdf
      */
-    /*public function _render()
+    public function _render()
     {
-
-        // defines
-        $bBox = $this->getBoundingBox();
-        $style = $this->getStyle();
-        $padding = $style->get(Style::STYLE_PADDING);
-        $product = $this->getProduct();
-        $helper = $this->getConfig()->getHelper();
-
-        // get the image
-        $imagePath = $helper->getProductImage($product);
-        $image = \Zend_Pdf_Image::imageWithPath($imagePath);
-
-        // calculate image size
-        $sizeFactor = $image->getPixelWidth() / $image->getPixelHeight();
-        $maxWidth = $bBox->getInnerWidth();
-        $maxHeight = 0.6 * $bBox->getInnerHeight();
-        if($maxWidth){
-            $imageWidth = $maxWidth;
-            $imageHeight = $imageWidth / $sizeFactor;;
-            if($maxHeight && $imageHeight > $maxHeight){
-                $imageHeight = $maxHeight;
-                $imageWidth = $imageHeight * $sizeFactor;
-            }
-        }else if($maxWidth){
-            $imageWidth = $maxWidth;
-            $imageHeight = $imageWidth / $sizeFactor;
-        }
-
-        // define position
-        $x1 = $bBox->getAbsX1() + $padding[3];
-        $y1 = $bBox->getAbsY1() - $padding[0];
-
-
-        // write image to page
-        $this->getPdfPage()->drawImage($image,$x1, $y1 - $imageHeight , $x1 + $imageWidth, $y1 );
-    }*/
+        //
+    }
 
 }
