@@ -23,12 +23,16 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Similar to Magento's Template path hints</comment>
                 </field>
+                <field id="cache_enabled" translate="label" type="select" sortOrder="60" showInDefault="1" showInStore="1" showInWebsite="1">
+                    <label>Cache enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
             </group>
             <group id="design" showInDefault="1" sortOrder="20">
                 <label>Design Settings</label>
                 <field id="logo_src" translate="label" type="image" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Logo Image</label>
-                    <comment>Allowed file types:PNG, JPG, JPEG, TIF</comment>
+                    <comment>Allowed file types:PNG, JPG, JPEG, TIF. If not set, default logo is used.</comment>
                     <backend_model>Glugox\PDF\Model\Config\Backend\Logo</backend_model>
                     <base_url type="media" scope_info="1">logo</base_url>
                 </field>
@@ -52,17 +56,21 @@
                     <label>Store name in pdf</label>
                     <comment>If not set, default store name is used. Use 'Display store name' to disable.</comment>
                 </field>
-                <field id="display_price" translate="label" type="select" sortOrder="55" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="display_price" translate="label" type="select" sortOrder="52" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Display price</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="display_categories" translate="label" type="select" sortOrder="56" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="display_categories" translate="label" type="select" sortOrder="54" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Display Categories</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="display_sku" translate="label" type="select" sortOrder="57" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="display_sku" translate="label" type="select" sortOrder="56" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Display Sku</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="list_title_max_lines" translate="label" type="text" sortOrder="57" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title max lines in list mode</label>
+                    <comment>If title is truncated, '...' is appended. 0/[empty] for unlimited.</comment>
                 </field>
                 <field id="display_description_in_single_mode" translate="label" type="select" sortOrder="58" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Display description in single mode</label>
@@ -71,10 +79,6 @@
                 <field id="display_attributes_in_single_mode" translate="label" type="select" sortOrder="59" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Display attributes in single mode</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="general_padding" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>General spacing</label>
-                    <comment>For example vertical distance between product categories and product title</comment>
                 </field>
                 <field id="body_padding" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Body padding</label>
@@ -86,16 +90,8 @@
                 <field id="single_title_size" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Title font size in single mode</label>
                 </field>
-                <field id="single_title_max_chars_in_line" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Title max chars in line - single mode</label>
-                    <comment>This directly depends on the 'Title font size in single mode', for best look it needs to be adopted by testing if you change the values</comment>
-                </field>
                 <field id="list_title_size" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Title font size in list mode</label>
-                </field>
-                <field id="list_title_max_chars_in_line" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Title max chars in line - list mode</label>
-                    <comment>This directly depends on the 'Title font size in list mode', for best look it needs to be adopted by testing if you change the values</comment>
                 </field>
                 <field id="font_regular" translate="label" type="image" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Font for the regular texts</label>

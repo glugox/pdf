@@ -71,10 +71,19 @@ class Repeater extends \Glugox\PDF\Model\Renderer\Container\AbstractRenderer
      */
     public function initialize(\Glugox\PDF\Model\Page\Config $config = null)
     {
-        $this->_createItems();
+
         parent::initialize($config);
 
 
+    }
+
+    /**
+     * Method executed after initializetion
+     */
+    public function boot()
+    {
+        $this->_createItems();
+        parent::boot();
     }
 
 

@@ -58,6 +58,23 @@ class MultilineText extends AbstractRenderer
 
 
 
+    /**
+     * @return int
+     */
+    public function getMaxLines()
+    {
+        return $this->getStyle()->get(Style::STYLE_MAX_LINES);
+    }
+
+
+    /**
+     * If max lines !== 0
+     *
+     * @var string
+     */
+    protected $_truncSuffix = '...';
+
+
 
 
     /**
@@ -74,6 +91,8 @@ class MultilineText extends AbstractRenderer
         $maxHeight = $bBox->getInnerHeight();
 
         $this->_nLinesRenderedOnPage = 0;
+        $truncateFlag = false;
+        $maxLines = $this->getMaxLines();
 
         if($maxWidth > 0){
 
@@ -99,16 +118,26 @@ class MultilineText extends AbstractRenderer
                     if($width <= $maxWidth || ($currWidth === $width && $currWidth > $maxWidth)){
                         $line .= $word;
                     }else{
+
+                        $line = \trim($line);
+                        if($maxLines && \count($this->_lines) >= ($maxLines-1) && $k < ($n-1)){ // if this is last line allowed, but would have more text
+                            $truncateFlag = true;
+                            $line = \substr($line, 0, \strlen($line) - \strlen($this->_truncSuffix)) . $this->_truncSuffix;
+                        }
                         /**
                          * store the line, move index back
                          * as the last word did not fit in this loop
                          */
-                        $this->_lines[] = \trim($line);
+                        $this->_lines[] = $line;
+
                         $width -= $currWidth;
                         $this->_textWidth = \max($this->_textWidth, $width);
                         $line = "";
                         $width = 0;
                         --$k;
+                    }
+                    if($truncateFlag){
+                        break;
                     }
                 }
                 if(!empty($line)){

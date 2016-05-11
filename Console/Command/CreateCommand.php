@@ -46,6 +46,11 @@ class CreateCommand extends Command {
     const OPTION_CREATE_CATEGORIES = 'create-categories';
 
     /**
+     * Create pdf of all products filtered by attributes
+     */
+    const OPTION_FILTER = 'filter';
+
+    /**
      * Core registry
      *
      * @var \Magento\Framework\Registry
@@ -109,7 +114,7 @@ class CreateCommand extends Command {
         // Register the console output to the global registry, so it can be used from other parts to display console info too.
         $this->_registry->register(self::CURRENT_CMD_OUTPUT_INTERFACE, $output);
 
-        $this->_pdfService->setAreaCode("adminhtml");
+        $this->_pdfService->setAreaCode("frontend");
 
         /** @var \Glugox\PDF\Model\PDFResult * */
         $pdfResult = $this->_pdfService->serve((string) $input, $this->getDefinition());
@@ -118,7 +123,7 @@ class CreateCommand extends Command {
         $pdf = $pdfResult->getPdf();
 
         $date = $this->_helper->getInstance('Magento\Framework\Stdlib\DateTime\DateTime')->date('Y-m-d_H-i-s');
-        $filename = $this->_varDirectory->getAbsolutePath("pdf" . $date . ".pdf");
+        $filename = $this->_varDirectory->getAbsolutePath("pdf/pdf-" . $date . ".pdf");
 
         $output->writeln('<info> Saving PDF to : ' . $filename . '  ...</info>');
 

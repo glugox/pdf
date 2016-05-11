@@ -217,7 +217,7 @@ class Data extends AbstractHelper {
      * @return PDFResult
      */
     public function createPdfResult(){
-        return new PDFResult();
+        return $this->createInstance("Glugox\PDF\Model\PDFResult");
     }
 
     /**
@@ -237,6 +237,7 @@ class Data extends AbstractHelper {
     public function getPDFProvider() {
         return $this->_objectManager->get("Glugox\PDF\Model\Provider\PDF\ProviderInterface");
     }
+    
 
 
     /**

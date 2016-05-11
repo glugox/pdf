@@ -22,6 +22,15 @@ class Title extends MultilineText
     public function initialize(\Glugox\PDF\Model\Page\Config $config = null)
     {
         parent::initialize($config);
+
+    }
+
+    /**
+     * Method executed after initializetion
+     */
+    public function boot()
+    {
+        parent::boot();
         $product = $this->getConfig()->getProduct();
         if(!$product || !$product instanceof \Magento\Catalog\Model\Product){
             if($this->getParent()){

@@ -28,7 +28,7 @@ class CollectionPdf extends AbstractHelper
      * @param \Magento\Framework\App\Action\Action $controller
      * @return \Glugox\PDF\Helper\ProductPdf
      */
-    public function prepareAndRender(Result $resultPage, Collection $collection)
+    public function prepareAndRender(Result $resultPage, $collection)
     {
         
         $pdf = $resultPage->getConfig()

@@ -23,6 +23,20 @@ interface RendererInterface
      */
     public function updateLayout();
 
+
+    /**
+     * Initializes the zend pdf instance and
+     * prepares it for rendering.
+     *
+     * @return \Glugox\PDF\Model\Renderer\RendererInterface
+     */
+    public function initialize(\Glugox\PDF\Model\Page\Config $config=null);
+
+    /**
+     * Method executed after initializetion
+     */
+    public function boot();
+
     /**
      * @param string $name
      * @return \Glugox\PDF\Model\Renderer\RendererInterface

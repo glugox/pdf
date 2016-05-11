@@ -33,6 +33,7 @@ class Delete extends \Glugox\PDF\Controller\Adminhtml\Index\Controller {
                 if (!$pdfData[Main::DATA_ID]) {
                     $this->messageManager->addError(__('This pdf no longer exists.'));
                 } else {
+                    $this->_cache->delete($pdfData["pdf_file"]);
                     $this->_registry->register(PDFModel::CURRENT_PDF_KEY, $pdfData);
                     $this->messageManager->addSuccess(
                             __(

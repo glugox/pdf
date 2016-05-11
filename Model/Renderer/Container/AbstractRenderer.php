@@ -50,6 +50,18 @@ class AbstractRenderer extends Element implements RendererInterface
     }
 
     /**
+     * Method executed after initializetion
+     */
+    public function boot(){
+        parent::boot();
+        if($this->hasChildren()){
+            foreach ($this->getChildren() as $child) {
+                $child->boot();
+            }
+        }
+    }
+
+    /**
      * Updates children properties needed for rendering
      * like bounding box (x,y,width,height) after page state
      * is changed (like rendered new element)
@@ -247,6 +259,21 @@ class AbstractRenderer extends Element implements RendererInterface
         }
     }
 
+    /**
+     * @param bool $isRendered
+     * @param bool $recursively
+     * @return \Glugox\PDF\Model\Renderer\RendererInterface
+     */
+    public function setIsRendered($isRendered, $recursively = false)
+    {
+        if($recursively && $this->hasChildren()){
+            foreach ($this->getChildren() as $child) {
+                $child->setIsRendered($isRendered, $recursively);
+            }
+        }
+        return parent::setIsRendered($isRendered, $recursively);
+    }
+
 
     /**
      * @return boolean
@@ -348,11 +375,24 @@ class AbstractRenderer extends Element implements RendererInterface
      * @return \Glugox\PDF\Model\Renderer\RendererInterface|null
      */
     public function getChild( $childName ){
-        foreach ($this->getChildren() as $child) {
-            if($child->getName() === $childName ){
-                return $child;
+        if(\strpos($childName, "/") > 0){
+            $path = \explode("/", $childName);
+            $element = $this;
+            foreach ($path as $part){
+                $element = $element->getChild($part);
+                if(!$element){
+                    return null;
+                }
+            }
+            return $element;
+        }else{
+            foreach ($this->getChildren() as $child) {
+                if($child->getName() === $childName ){
+                    return $child;
+                }
             }
         }
+
         return null;
     }
 
@@ -425,6 +465,21 @@ class AbstractRenderer extends Element implements RendererInterface
      */
     function __clone()
     {
+
+
+        if(null === $this->_style){
+            // clone the style by creating new one from source
+            $this->setStyle($this->getStyle()->getSource());
+        }else{
+            // clone the style directly, it may have been modified since source is parsed.
+            $cStyle = clone $this->_style;
+            $this->setStyle($cStyle);
+        }
+
+
+        // mark the bounding box ready for creating new one.
+        $this->_boundingBox = null;
+
         $clonedChildren = [];
         if($this->hasChildren()){
             foreach ($this->getChildren() as $child) {

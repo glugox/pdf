@@ -11,15 +11,15 @@
 
 namespace Glugox\PDF\Model;
 
+use Magento\Framework\App\Filesystem\DirectoryList;
+
 /**
  * PDF model.
  *
- * @method \string getFilePath()
- * @method \Glugox\PDF\Model\PDF setFilePath(\string $value)
+ * @method \string getPdfFile()
+ * @method \Glugox\PDF\Model\PDF setPdfFile(\string $value)
  * @method \int getCustomerId()
  * @method \Glugox\PDF\Model\PDF setCustomerId(\int $value)
- * @method \string getPageUrl()
- * @method \Glugox\PDF\Model\PDF setPageUrl(\string $name)
  * @method \string getCreatedAt()
  * @method \Glugox\PDF\Model\PDF setCreatedAt(\string $value)
  * @method \string getDownloadUrl()
@@ -34,6 +34,7 @@ class PDF extends \Magento\Framework\Model\AbstractModel {
      * @string
      */
     const CURRENT_PDF_KEY = 'current_pdf_key';
+    const DIRECTORY_PATH = 'pdf';
 
 
     /** @var \Glugox\PDF\Helper\Data */

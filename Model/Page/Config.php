@@ -16,6 +16,7 @@ use Glugox\PDF\Model\Renderer\Data\Style;
 use Glugox\PDF\Model\Renderer\Element;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
+use Magento\TestFramework\Inspection\Exception;
 
 
 class Config extends \Magento\Framework\DataObject
@@ -46,8 +47,8 @@ class Config extends \Magento\Framework\DataObject
     const DISPLAY_LOGO                         = self::PRE_D . 'display_logo';
     const DISPLAY_PRICE                        = self::PRE_D . 'display_price';
     const DISPLAY_SKU                          = self::PRE_D . 'display_sku';
+    const LIST_TITLE_MAX_LINES                 = self::PRE_D . 'list_title_max_lines';
     const DISPLAY_STORE_NAME                   = self::PRE_D . 'display_store_name';
-    const GENERAL_PADDING                      = self::PRE_D . 'general_padding';
     const HEADER_ON_EACH_PAGE                  = self::PRE_D . 'header_on_each_page';
     const LOGO_HEIGHT                          = self::PRE_D . 'logo_height';
     const LOGO_SRC                             = self::PRE_D . 'logo_src';
@@ -61,6 +62,7 @@ class Config extends \Magento\Framework\DataObject
     const ENABLED                              = self::PRE_GEN . 'enabled';
     const MAX_ITEMS_ON_LIST                    = self::PRE_GEN . 'max_items_on_list';
     const DEBUG_MODE                           = self::PRE_GEN . 'debug_mode';
+    const CACHE_ENABLED                        = self::PRE_GEN . 'cache_enabled';
 
     /**
      * Section image
@@ -68,8 +70,8 @@ class Config extends \Magento\Framework\DataObject
     const PRE_IMG                              = 'image/';
     const LIST_IMAGE_MAX_HEIGHT                = self::PRE_IMG . 'list_image_max_height';
     const LIST_IMAGE_MAX_WIDTH                 = self::PRE_IMG . 'list_image_max_width';
-    const SHIW_IMAGE_IN_LIST_MODE              = self::PRE_IMG . 'show_image_in_list_mode';
-    const SHIW_IMAGE_IN_SINGLE_MODE            = self::PRE_IMG . 'show_image_in_single_mode';
+    const SHOW_IMAGE_IN_LIST_MODE              = self::PRE_IMG . 'show_image_in_list_mode';
+    const SHOW_IMAGE_IN_SINGLE_MODE            = self::PRE_IMG . 'show_image_in_single_mode';
     const SINGLE_IMAGE_MAX_HEIGHT              = self::PRE_IMG . 'single_image_max_height';
     const SINGLE_IMAGE_MAX_WIDTH               = self::PRE_IMG . 'single_image_max_width';
 
@@ -87,9 +89,7 @@ class Config extends \Magento\Framework\DataObject
     const COLOR_TITLE                          = self::PRE_TYPO . 'color_title';
     const FONT_BOLD                            = self::PRE_TYPO . 'font_bold';
     const FONT_REGULAR                         = self::PRE_TYPO . 'font_regular';
-    const LIST_TITLE_MAX_CHARS_IN_LINE         = self::PRE_TYPO . 'list_title_max_chars_in_line';
     const LIST_TITLE_SIZE                      = self::PRE_TYPO . 'list_title_size';
-    const SINGLE_TITLE_MAX_CHARS_IN_LINE       = self::PRE_TYPO . 'single_title_max_chars_in_line';
     const SINGE_TITLE_SIZE                     = self::PRE_TYPO . 'single_title_size';
 
 
@@ -271,6 +271,7 @@ class Config extends \Magento\Framework\DataObject
         
         $rootRenderer = $this->getLayout()->getRootRenderer();
         $rootRenderer->initialize($this);
+        $rootRenderer->boot();
 
         $rendered = $rootRenderer->render();
         while (Element::NEW_PAGE_FLAG === $rendered){
@@ -278,6 +279,137 @@ class Config extends \Magento\Framework\DataObject
         }
 
         return $rendered;
+    }
+
+
+    /**
+     * @param $rootRenderer
+     * @param $pageSelector
+     * @param $configPath
+     * @param $styleKey
+     * @param bool $isBool
+     * @param isInt $
+     */
+    protected function processConfigStyle( $rootRenderer, $pageSelector, $configPath, $styleKey, $isBool=false, $isInt=false ){
+        $value = $this->getData($configPath);
+        if(empty($value)){
+            return;
+        }
+        if($isBool){
+            $value = (boolean)$value;
+        }else if($isInt){
+            $value = (int)$value;
+        }
+        $renderer = $rootRenderer->getChild($pageSelector);
+        if($renderer){
+            if(Style::STYLE_DISPLAY === $styleKey){
+                $value = ($value ? "block" : "none");
+            }
+            $renderer->getStyle()->set($styleKey, $value);
+        }
+    }
+
+
+    /**
+     * Element styles can be set in the xml files, but if the user
+     * has set some styling in the admin config , than we will override
+     * the styles with the config values.
+     */
+    public function processConfigStyling( ){
+
+
+        $rootRenderer = $this->getLayout()->getRootRenderer();
+        $pCont = "wrapper/product-page/product-container";
+        $data = [
+            // page
+            ["wrapper/product-page", self::BODY_PADDING, Style::STYLE_PADDING, false, true],
+            ["wrapper/product-page", self::COLOR_TEXT,   Style::STYLE_COLOR,   false, false],
+
+            // header
+            ["wrapper/product-page/header-wrapper/logo",        self::LOGO_HEIGHT,         Style::STYLE_HEIGHT , false, true],
+            ["wrapper/product-page/header-wrapper/logo",        self::DISPLAY_LOGO,        Style::STYLE_DISPLAY, true, false],
+            ["wrapper/product-page/header-wrapper/store-name",  self::LOGO_HEIGHT,         Style::STYLE_HEIGHT,  false, true],
+            ["wrapper/product-page/header-wrapper/store-name",  self::DISPLAY_STORE_NAME,  Style::STYLE_DISPLAY, true, false],
+            ["wrapper/product-page/header-wrapper/header-line", self::COLOR_LINES,         Style::STYLE_COLOR,   false, false],
+            ["wrapper/product-page/header-wrapper/store-name",  self::COLOR_STORE_NAME,    Style::STYLE_COLOR,   false, false],
+
+            // content
+
+            [$pCont."/price-container/product-price",        self::DISPLAY_PRICE,         Style::STYLE_DISPLAY, true, false],
+            [$pCont."/repeater-item/price",                  self::DISPLAY_PRICE,         Style::STYLE_DISPLAY, true, false],
+            [$pCont."/repeater-item/price",                  self::COLOR_PRICE,           Style::STYLE_COLOR,   false, false],
+            [$pCont."/repeater-item/title",                  self::COLOR_TITLE,           Style::STYLE_COLOR,   false, false],
+            [$pCont."/repeater-item/title",                  self::LIST_TITLE_MAX_LINES,  Style::STYLE_MAX_LINES, false, true],
+            [$pCont."/title-container/product-categories",   self::DISPLAY_CATEGORIES,    Style::STYLE_DISPLAY, true, false],
+            [$pCont."/title-container/product-sku",          self::DISPLAY_SKU,           Style::STYLE_DISPLAY, true, false],
+            [$pCont."/desc-container/description",           self::DISPLAY_DESCRIPTION_IN_SINGLE_MODE, Style::STYLE_DISPLAY, true, false],
+            [$pCont."/attr-container/attributes",            self::DISPLAY_ATTRIBUTES_IN_SINGLE_MODE,  Style::STYLE_DISPLAY, true, false],
+            [$pCont."/title-container/product-title",        self::SINGE_TITLE_SIZE,      Style::STYLE_FONT_SIZE, false, true],
+            [$pCont."/title-container/product-categories",   self::COLOR_CATEGORIES,      Style::STYLE_COLOR, false, false],
+            [$pCont."/title-container/product-sku",          self::COLOR_SKU,             Style::STYLE_COLOR, false, false],
+            [$pCont."/price-container/product-price",        self::COLOR_PRICE,           Style::STYLE_COLOR, false, false],
+            [$pCont."/price-container/product-price",        self::COLOR_PRICE_OLD,       Style::STYLE_COLOR_PRICE_OLD, false, false],
+            [$pCont."/title-container/product-title",        self::COLOR_TITLE,           Style::STYLE_COLOR, false, false],
+
+        ];
+
+        foreach ($data as $item) {
+            $this->processConfigStyle($rootRenderer, $item[0], $item[1], $item[2], $item[3], $item[4]);
+        }
+
+
+
+        // Title font size in list mode
+        $titleFontSizeLM = (int) $this->getData(self::LIST_TITLE_SIZE);
+
+        // Font for the regular texts
+        $font = $this->getData(self::FONT_REGULAR);
+
+        // Font for the bold texts
+        $fontBold = $this->getData(self::FONT_BOLD);
+
+        // Lines color
+        $linesColor = $this->getData(self::COLOR_LINES);
+
+        // Categories color
+        $categoriesColor = $this->getData(self::COLOR_CATEGORIES);
+
+        // SKU color
+        $skuColor = $this->getData(self::COLOR_SKU);
+
+        // Store name color
+        $storeNameColor = $this->getData(self::COLOR_STORE_NAME);
+
+        // Price color
+        $priceColor = $this->getData(self::COLOR_PRICE);
+
+        // Discounted price color
+        $discountedPriceColor = $this->getData(self::COLOR_PRICE_OLD);
+
+        // Title color
+        $titleColor = $this->getData(self::COLOR_TITLE);
+
+        // Text color
+        $textColor = $this->getData(self::COLOR_TEXT);
+
+        // Show image in single mode
+        $showImageSM = (boolean) $this->getData(self::SHOW_IMAGE_IN_SINGLE_MODE);
+
+        // Maximum width of image in single mode
+        $imageWidthSM = (int) $this->getData(self::SINGLE_IMAGE_MAX_WIDTH);
+
+        // Maximum height of image in single mode
+        $imageHeightSM = (int) $this->getData(self::SINGLE_IMAGE_MAX_HEIGHT);
+
+        // Show image in list mode
+        $showImageLM = (boolean) $this->getData(self::SHOW_IMAGE_IN_LIST_MODE);
+
+        // Maximum width of image in list mode
+        $imageWidthLM = (int) $this->getData(self::LIST_IMAGE_MAX_WIDTH);
+
+        // Maximum height of image in list mode
+        $imageHeightLM = (int) $this->getData(self::LIST_IMAGE_MAX_HEIGHT);
+        
     }
     
 
@@ -306,12 +438,10 @@ class Config extends \Magento\Framework\DataObject
             case self::EVENT_ELEMENT_RENDER_START:
                 $this->setCurrentRenderingElement($element);
                 $this->getLayout()->getRootRenderer()->updateLayout();
-
                 break;
             case self::EVENT_ELEMENT_RENDER_END:
                 $this->addRenderedElement($element);
                 //$this->getLayout()->getRootRenderer()->updateLayout();
-
                 break;
             default:
                 //
@@ -391,6 +521,13 @@ class Config extends \Magento\Framework\DataObject
     public function renderOnNewPage(){
 
         $this->newPage();
+        if(true){
+            $header = $this->getLayout()->getRootRenderer()->getChild("wrapper/product-page/header-wrapper");
+            if($header){ // first time is null
+                $header->setIsRendered(false,true);
+            }
+
+        }
         return $this->getLayout()->getRootRenderer()->render();
     }
 
@@ -473,8 +610,8 @@ class Config extends \Magento\Framework\DataObject
         $parentBB = $element->hasParent() ? $element->getParent()->getBoundingBox() : $element->getConfig()->getBoundingBox();
 
         /**
-         * Depending on position is absolute or relative
-         * calculate real position of the element, using its
+         * Define relative position in the layout,
+         * calculate absolute position of the element, using its
          * parent.
          */
         $newMaxWidth = $parentBB->getInnerWidth();
@@ -534,8 +671,7 @@ class Config extends \Magento\Framework\DataObject
 
         $boundingBox->setCanIncreaseHeight(false);
         $boundingBox->setCanIncreaseWidth(false);
-
-
+        
         return $boundingBox;
     }
 
@@ -616,10 +752,10 @@ class Config extends \Magento\Framework\DataObject
     }
 
     /**
-     * @param Collection $productCollection
+     * @param $productCollection
      * @return \Glugox\PDF\Model\Page\Config
      */
-    public function setProductCollection(Collection $productCollection)
+    public function setProductCollection($productCollection)
     {
         $this->_productCollection = $productCollection;
         if(!empty($this->_pdfType)){
@@ -634,7 +770,11 @@ class Config extends \Magento\Framework\DataObject
      * @return array
      */
     public function getProductItems(){
-        return $this->getProductCollection()->load();
+        $collection = $this->getProductCollection();
+        if($collection instanceof Collection){
+            $collection = $this->getProductCollection()->load();
+        }
+        return $collection;
     }
 
 

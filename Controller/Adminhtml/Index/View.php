@@ -27,51 +27,20 @@ class View extends \Glugox\PDF\Controller\Adminhtml\Index\Controller {
     {
         $pdfId = $this->getRequest()->getParam('pdf_id');
         if ($pdfId) {
+
+            /** @var PDFModel $pdfModel */
             $pdfModel = $this->_service->get($pdfId);
             if ($pdfModel) {
-                $pdfResult = $pdfModel->createPdf($this->_service);
-                $date = $this->_objectManager->get('Magento\Framework\Stdlib\DateTime\DateTime')->date('Y-m-d_H-i-s');
-                return $this->_fileFactory->create(
-                    'pdf' . $date . '.pdf',
-                    $pdfResult->getPdf()->render(),
-                    DirectoryList::VAR_DIR,
-                    'application/pdf'
-                );
+                if($this->_cache->has($pdfModel->getPdfFile())){
+                    return $this->_cache->getResult($pdfModel->getName(),$pdfModel->getPdfFile());
+                }
             }
         } else {
             return $this->resultForwardFactory->create()->forward('noroute');
         }
     }
 
-    /**
-     * Generates PDF to output
-     *
-     */
-    /*public function execute() {
 
-        $pdfId = (int) $this->getRequest()->getParam('pdf_id');
-        try {
-            if ($pdfId) {
-                $pdfData = $this->_service->get($pdfId);
-                if (!$pdfData[Main::DATA_ID]) {
-                    $this->messageManager->addError(__('This PDF no longer exists.'));
-                } else {
-                    //
-                    $pdf = $this->_objectManager->create('Magento\Sales\Model\Order\Pdf\Invoice')->getPdf([$invoice]);
-                    $date = $this->_objectManager->get('Magento\Framework\Stdlib\DateTime\DateTime')->date('Y-m-d_H-i-s');
-                    return $this->_fileFactory->create(
-                                    'invoice' . $date . '.pdf', $pdf->render(), DirectoryList::VAR_DIR, 'application/pdf'
-                    );
-                }
-            } else {
-                // we are running all pdfs
-            }
-        } catch (PDFException $e) {
-            $this->messageManager->addError($e->getMessage());
-        } catch (\Exception $e) {
-            $this->getLogger()->critical($e);
-        }
-    }*/
 
 
 }

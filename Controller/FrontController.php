@@ -76,6 +76,19 @@ abstract class FrontController extends  \Magento\Framework\App\Action\Action {
      */
     protected $_productHelper;
 
+
+    /**
+     * @var \Glugox\PDF\Model\Cache
+     */
+    protected $_cache;
+
+
+    /**
+     * @var \Magento\Catalog\Model\Layer\Category\FilterableAttributeList
+     */
+    protected $_attributesList;
+
+
     /**
      * FrontController constructor.
      * @param \Magento\Backend\App\Action\Context $context
@@ -107,7 +120,9 @@ abstract class FrontController extends  \Magento\Framework\App\Action\Action {
             \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository,
             \Magento\Store\Model\StoreManagerInterface $storeManager,
             \Magento\Framework\ObjectManagerInterface $objectManager,
-            \Glugox\PDF\Helper\ProductPdf $productHelper
+            \Glugox\PDF\Helper\ProductPdf $productHelper,
+            \Glugox\PDF\Model\Cache $cache,
+            \Magento\Catalog\Model\Layer\Category\FilterableAttributeList $attributesList
     ) {
         parent::__construct($context);
         $this->_registry = $registry;
@@ -123,6 +138,8 @@ abstract class FrontController extends  \Magento\Framework\App\Action\Action {
         $this->_storeManager = $storeManager;
         $this->_objectManager = $objectManager;
         $this->_productHelper = $productHelper;
+        $this->_cache = $cache;
+        $this->_attributesList = $attributesList;
     }
 
 

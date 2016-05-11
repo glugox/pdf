@@ -46,17 +46,25 @@ class PDFService implements PDFServiceInterface {
     protected $_pdfProvider;
 
     /**
+     * @var Cache
+     */
+    protected $_cache;
+
+    /**
      *
      * @param PDFFactory $pdfFactory
      * @param \Glugox\PDF\Helper\Data $helper
      */
     public function __construct(
-    PDFFactory $pdfFactory, \Glugox\PDF\Helper\Data $helper,
-            \Glugox\PDF\Model\Provider\PDF\ProviderInterface $pdfProvider
+            PDFFactory $pdfFactory,
+            \Glugox\PDF\Helper\Data $helper,
+            \Glugox\PDF\Model\Provider\PDF\ProviderInterface $pdfProvider,
+            \Glugox\PDF\Model\Cache $cache
     ) {
         $this->_pdfFactory = $pdfFactory;
         $this->_helper = $helper;
         $this->_pdfProvider = $pdfProvider;
+        $this->_cache = $cache;
 
     }
 
@@ -87,6 +95,9 @@ class PDFService implements PDFServiceInterface {
             ),
             new InputOption(
                     CreateCommand::OPTION_CREATE_CATEGORIES, '-c', InputOption::VALUE_REQUIRED, 'Create pdf of all products in one or more category.'
+            ),
+            new InputOption(
+                CreateCommand::OPTION_FILTER, '-f', InputOption::VALUE_REQUIRED, 'Filter products by attributes.'
             ),
         ]);
         return $definition;
@@ -121,36 +132,44 @@ class PDFService implements PDFServiceInterface {
         $this->_helper->info("PDF serve : " . (string) $this->_input);
         $pdfResult = null === $pdfResult ? $this->_helper->createPdfResult() : $pdfResult;
 
+        $sku = (string) $this->_input->getArgument(CreateCommand::SKU_ARGUMENT);
+
         // check for all command option
         if ($this->_input->getOption(CreateCommand::OPTION_CREATE_ALL)) {
-            return $this->createAllProductsPDF($pdfResult);
+            $pdfResult = $this->createAllProductsPDF($pdfResult);
         }
 
         // check for category command option
-        if ($category = $this->_input->getOption(CreateCommand::OPTION_CREATE_CATEGORIES)) {
+        else if ($category = $this->_input->getOption(CreateCommand::OPTION_CREATE_CATEGORIES)) {
             if (false === \strpos($category, ',')) {
-                return $this->createCategoryPDF($category, $pdfResult);
+                $pdfResult = $this->createCategoryPDF($category, $pdfResult);
             } else {
                 $categories = \explode(',', \trim($category, ","));
                 if (\count($categories) <= 1) {
                     throw new \Glugox\PDF\Exception\PDFException(__("Invalid category option value : %1", $category));
                 }
-                return $this->createCategoriesPDF($categories, $pdfResult);
+                $pdfResult = $this->createCategoriesPDF($categories, $pdfResult);
             }
         }
 
-        $sku = (string) $this->_input->getArgument(CreateCommand::SKU_ARGUMENT);
-        if ($sku) {
+        // sku
+        else if ($sku) {
             if (false === \strpos($sku, ',')) {
-                return $this->createProductPDF($sku, $pdfResult);
+                $pdfResult = $this->createProductPDF($sku, $pdfResult);
             } else {
                 $skus = \explode(',', \trim($sku, ","));
                 if (\count($skus) <= 1) {
                     throw new \Glugox\PDF\Exception\PDFException(__("Invalid sku argument : %1", $sku));
                 }
-                return $this->createProductsPDF($skus, $pdfResult);
+                $pdfResult = $this->createProductsPDF($skus, $pdfResult);
             }
         }
+
+        /*
+         * TODO: Add filters when on layered cat in filename
+         */
+        $pdfResult->createFileName( (string) $this->_input);
+        return $pdfResult; //getFiltersUsed
     }
 
 
@@ -230,7 +249,7 @@ class PDFService implements PDFServiceInterface {
         $pdf = null;
 
         /** @var \Magento\Framework\Api\ExtensibleDataInterface **/
-        $products = $this->getProductsProvider()->getProductsByCategories([$categoryId]);
+        $products = $this->getProductsProvider()->getProductsByCategories([$categoryId], $pdfResult);
 
         if (null === $products) {
             $pdfResult->addError(__("Products for category %1 not found!", $categoryId));
@@ -262,7 +281,7 @@ class PDFService implements PDFServiceInterface {
         $pdf = null;
 
         /** @var \Magento\Framework\Api\ExtensibleDataInterface **/
-        $products = $this->getProductsProvider()->getProductsByCategories($categoryIds);
+        $products = $this->getProductsProvider()->getProductsByCategories($categoryIds, $pdfResult);
 
         if (null === $products) {
             $pdfResult->addError(__("Products for categories %1 not found!", \implode(",", $categoryIds)));

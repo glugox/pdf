@@ -52,7 +52,7 @@ class Products implements \Glugox\PDF\Model\Provider\Products\ProviderInterface 
 
     /**
      *
-     * @var Magento\Catalog\Api\ProductRepositoryInterface
+     * @var \Magento\Catalog\Api\ProductRepositoryInterface
      */
     protected $productRepository;
 
@@ -146,8 +146,11 @@ class Products implements \Glugox\PDF\Model\Provider\Products\ProviderInterface 
      * @param array $categories
      * @return \Magento\Framework\Api\ExtensibleDataInterface|int
      */
-    public function getProductsByCategories(array $categories,
-            $onlyCount = false) {
+    public function getProductsByCategories(
+            array $categories,
+            \Glugox\PDF\Model\PDFResult $pdfResult = null,
+            $onlyCount = false
+    ) {
 
         foreach ($categories as $category) {
             if (!$category instanceof \Magento\Catalog\Api\Data\CategoryInterface) {
@@ -274,7 +277,7 @@ class Products implements \Glugox\PDF\Model\Provider\Products\ProviderInterface 
     public function getProductCountByCategories(array $categories) {
 
         $onlyCount = true;
-        return $this->getProductsByCategories($categories, $onlyCount);
+        return $this->getProductsByCategories($categories, null, $onlyCount);
     }
 
 

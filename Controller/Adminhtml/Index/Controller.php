@@ -43,6 +43,12 @@ abstract class Controller extends Action {
      */
     protected $_fileFactory;
 
+
+    /**
+     * @var \Glugox\PDF\Model\Cache
+     */
+    protected $_cache;
+
     /**
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magento\Framework\Registry $registry
@@ -58,7 +64,8 @@ abstract class Controller extends Action {
             \Glugox\PDF\Api\PDFServiceInterface $service,
             \Magento\Framework\Json\Helper\Data $jsonHelper,
             \Magento\Framework\Escaper $escaper,
-            \Magento\Framework\App\Response\Http\FileFactory $fileFactory
+            \Magento\Framework\App\Response\Http\FileFactory $fileFactory,
+            \Glugox\PDF\Model\Cache $cache
     ) {
         parent::__construct($context);
         $this->_registry = $registry;
@@ -67,6 +74,7 @@ abstract class Controller extends Action {
         $this->jsonHelper = $jsonHelper;
         $this->escaper = $escaper;
         $this->_fileFactory = $fileFactory;
+        $this->_cache = $cache;
     }
 
 

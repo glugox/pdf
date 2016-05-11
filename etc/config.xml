@@ -12,6 +12,7 @@
         <glugox_pdf>
             <general>
                 <max_items_on_list>400</max_items_on_list>
+                <cache_enabled>1</cache_enabled>
             </general>
             <design>
                 <display_logo>1</display_logo>
@@ -21,16 +22,14 @@
                 <display_price>1</display_price>
                 <display_categories>1</display_categories>
                 <display_sku>1</display_sku>
+                <list_title_max_lines>3</list_title_max_lines>
                 <display_description_in_single_mode>1</display_description_in_single_mode>
                 <display_attributes_in_single_mode>1</display_attributes_in_single_mode>
-                <general_padding>15</general_padding>
                 <body_padding>20</body_padding>
             </design>
             <typography>
                 <single_title_size>30</single_title_size>
-                <single_title_max_chars_in_line>32</single_title_max_chars_in_line>
                 <list_title_size>22</list_title_size>
-                <list_title_max_chars_in_line>34</list_title_max_chars_in_line>
                 <color_lines>#eeeeee</color_lines>
                 <color_categories>#999999</color_categories>
                 <color_sku>#999999</color_sku>

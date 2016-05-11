@@ -151,7 +151,6 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
             $this->load();
             $this->readElements();
             $this->generateElements();
-            $this->processConfigStyling();
         }
     }
 
@@ -200,6 +199,7 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
      * Load layout
      */
     public function load(){
+        $this->_config->getHelper()->info("Layout loading...");
         $result = $this->_loadFileLayoutUpdatesXml();
         return $this;
     }
@@ -225,7 +225,12 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
                 //
         }
 
+        $this->_config->getHelper()->info("Pattern for loading is '{$filesPattern}'");
+
         $updateFiles = $this->_fileSource->getFiles($theme, $filesPattern);
+        if(!\count($updateFiles)){
+            $this->_config->getHelper()->info("Warning! No layout xml files loaded!");
+        }
         foreach ($updateFiles as $file) {
 
             $fileReader = $this->_readFactory->create($file->getFilename(), DriverPool::FILE);
@@ -263,6 +268,7 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
     public function readElement( \Glugox\PDF\Model\Layout\Element $element ){
 
         $nodeName = $element->getName();
+        $this->_config->getHelper()->info("Reading element '{$nodeName}'...");
 
         // make sure we read only supported types
         if( \in_array($nodeName, self::SUPPORTED_TYPES) ){
@@ -417,6 +423,8 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
             throw new PDFException(__("Element schelduled for generation does not have type!"));
         }
 
+        $this->_config->getHelper()->info("Generating element '{$name}' [{$type}]...");
+
         // check /set generated flag
         if( $this->_scheduledStructure->isElementGenerated($name) ){
             return false;
@@ -442,16 +450,6 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
         }
 
 
-    }
-
-
-    /**
-     * Element styles can be set in the xml files, but if the user
-     * has set some styling in the admin config , than we will override
-     * the styles with the config values.
-     */
-    protected function processConfigStyling(){
-        $config = $this->getConfig();
     }
 
 

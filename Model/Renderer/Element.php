@@ -168,6 +168,14 @@ abstract class Element implements RendererInterface
 
 
     /**
+     * Method executed after initializetion
+     */
+    public function boot(){
+        //
+    }
+
+
+    /**
      * Updates properties needed for rendering
      * like bounding box (x,y,width,height) after page state
      * is changed (like rendered new element)
@@ -409,7 +417,7 @@ abstract class Element implements RendererInterface
      * @param boolean $isRendered
      * @return \Glugox\PDF\Model\Renderer\RendererInterface
      */
-    public function setIsRendered($isRendered)
+    public function setIsRendered($isRendered, $recursively=false)
     {
         $this->_isRendered = $isRendered;
         return $this;
@@ -485,13 +493,17 @@ abstract class Element implements RendererInterface
         $bBox = $this->getBoundingBox();
 
         if ($this->getStyle()->canDisplay()) {
-            
+
+            // checking values
+            //if ($this->isBlock()) {
+
             $sizeResult = $this->checkSize();
             if (true === $sizeResult) {
                 //
             } else if ($sizeResult === self::NEW_PAGE_FLAG) {
                 return self::NEW_PAGE_FLAG;
             }
+            // }
 
             // real rendering
             $renderResult = $this->_render();
@@ -505,7 +517,9 @@ abstract class Element implements RendererInterface
             if ($this->isDebugMode()) {
                 //$this->_drawBoundingBox();
             }
+
         }
+
 
         // rendering end
         // set this is rendered
@@ -704,6 +718,32 @@ abstract class Element implements RendererInterface
     {
         $str = \strip_tags($str, '<a>');
         return \html_entity_decode($str);
+    }
+
+    /**
+     * When an object is cloned, PHP 5 will perform a shallow copy of all of the object's properties.
+     * Any properties that are references to other variables, will remain references.
+     * Once the cloning is complete, if a __clone() method is defined,
+     * then the newly created object's __clone() method will be called, to allow any necessary properties that need to be changed.
+     * NOT CALLABLE DIRECTLY.
+     *
+     * @return mixed
+     * @link http://php.net/manual/en/language.oop5.cloning.php
+     */
+    function __clone()
+    {
+
+        if(null === $this->_style){
+            // clone the style by creating new one from source
+            $this->setStyle($this->getStyle()->getSource());
+        }else{
+            // clone the style directly, it may have been modified since source is parsed.
+            $cStyle = clone $this->_style;
+            $this->setStyle($cStyle);
+        }
+
+        // mark the bounding box ready for creating new one.
+        $this->_boundingBox = null;
     }
 
 

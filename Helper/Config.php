@@ -343,14 +343,6 @@ class Config extends AbstractHelper {
         return $this->getConfig('design/header_on_each_page');
     }
 
-    /**
-     *
-     * @return \int
-     */
-    public function getPdfGeneralPadding() {
-        return (int) $this->getConfig('design/general_padding');
-    }
-
 
     /**
      *
@@ -413,17 +405,6 @@ class Config extends AbstractHelper {
         return (int)$this->getConfig('typography/single_title_size');
     }
 
-    /**
-     * Pdf title maximum characters in one line when on product view (one product)
-     *
-     * This directly depends on the getPdfTitleFontSize(), for best look
-     * it needs to be adopted by testing.
-     *
-     * @return \int
-     */
-    public function getPdfTitleMaxCharsInLine() {
-        return (int)$this->getConfig('typography/single_title_max_chars_in_line');
-    }
 
     /**
      *
@@ -431,18 +412,6 @@ class Config extends AbstractHelper {
      */
     public function getPdfItemTitleFontSize() {
         return (int)$this->getConfig('typography/list_title_size');
-    }
-
-    /**
-     * Pdf title maximum characters in one line when on product list view (multiple products)
-     *
-     * This directly depends on the getPdfItemTitleFontSize(), for best look
-     * it needs to be adopted by testing.
-     *
-     * @return \int
-     */
-    public function getPdfItemTitleMaxCharsInLine() {
-        return (int)$this->getConfig('typography/list_title_max_chars_in_line');
     }
 
 

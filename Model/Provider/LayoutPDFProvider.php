@@ -38,6 +38,12 @@ class LayoutPDFProvider implements \Glugox\PDF\Model\Provider\PDF\ProviderInterf
      */
     protected $_pdfResult;
 
+
+    /**
+     * @var \Glugox\PDF\Helper\Data
+     */
+    protected $_helper;
+
     /**
      * LayoutPDFProvider constructor.
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
@@ -49,13 +55,15 @@ class LayoutPDFProvider implements \Glugox\PDF\Model\Provider\PDF\ProviderInterf
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Glugox\PDF\Helper\ProductPdf $productHelper,
         \Glugox\PDF\Helper\CollectionPdf $collectionHelper,
-        \Glugox\PDF\Model\PDFResult $pdfResult
+        \Glugox\PDF\Model\PDFResult $pdfResult,
+        \Glugox\PDF\Helper\Data $helper
     )
     {
         $this->_objectManager = $objectManager;
         $this->_productHelper = $productHelper;
         $this->_collectionHelper = $collectionHelper;
         $this->_pdfResult = $pdfResult;
+        $this->_helper = $helper;
     }
 
     /**
@@ -77,11 +85,14 @@ class LayoutPDFProvider implements \Glugox\PDF\Model\Provider\PDF\ProviderInterf
 
         // Parse what we are getting, one product or more products
         if (\count($this->_products) === 1) {
+            $this->_helper->info("LayoutPDFProvider :: 1 product counted!");
             if( $products instanceof \Magento\Framework\Data\Collection){
                 $product =  $products->getFirstItem();
             }else{
                 $product = \array_shift($products);
             }
+
+            $this->_helper->info("LayoutPDFProvider :: " . $product->getName());
 
             // create pdf and pass it to the page result.
             $this->_productHelper->prepareAndRender($page, $product);
@@ -92,8 +103,7 @@ class LayoutPDFProvider implements \Glugox\PDF\Model\Provider\PDF\ProviderInterf
             $this->_collectionHelper->prepareAndRender($page, $this->_products);
         }
 
-
-
+        
         $pdfResult->setPdf( $page->getPdf() );
 
         return $pdfResult;

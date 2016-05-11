@@ -13,13 +13,13 @@ namespace Glugox\PDF\Model\Renderer;
 
 use Glugox\PDF\Exception\PDFException;
 
-class RootRenderer extends \Glugox\PDF\Model\Renderer\Container\AbstractRenderer implements RootRendererInterface
+class RootRenderer extends \Glugox\PDF\Model\Renderer\Container\AbstractRenderer implements RendererInterface
 {
     /**
      * Initializes the zend pdf instance and
      * prepares it for rendering.
      *
-     * @return \Glugox\PDF\Model\Renderer\RootRendererInterface
+     * @return \Glugox\PDF\Model\Renderer\RendererInterface
      */
     public function initialize(\Glugox\PDF\Model\Page\Config $config = null)
     {
@@ -39,7 +39,14 @@ class RootRenderer extends \Glugox\PDF\Model\Renderer\Container\AbstractRenderer
         return $this;
     }
 
-
+    /**
+     * Method executed after initializetion
+     */
+    public function boot()
+    {
+        $this->getConfig()->processConfigStyling();
+        parent::boot();
+    }
 
 
     /**

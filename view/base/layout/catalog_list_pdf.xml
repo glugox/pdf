@@ -24,7 +24,7 @@
                                style="text-align:top left; background-color:#cc00ee; height:45; float:left; display:block; margin:0;">
                         </block>
                         <block order="2" src="config:getStoreName" renderer="Glugox\PDF\Model\Renderer\Block\TextArea"
-                               name="store-name1"
+                               name="store-name"
                                style="width:100; font-size:12; float:right; height:45; display:block; text-align:bottom right; color:#333333; background-color:#ccffee; margin:0">
                         </block>
                         <block order="3" name="header-line" renderer="Glugox\PDF\Model\Renderer\Block\Box"

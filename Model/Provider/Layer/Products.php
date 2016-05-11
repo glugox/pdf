@@ -28,6 +28,18 @@ class Products extends \Glugox\PDF\Model\Provider\Products implements \Glugox\PD
      */
     protected $_layout;
 
+
+    protected $_filtersUsed;
+
+    /**
+     * @return mixed
+     */
+    public function getFiltersUsed()
+    {
+        return $this->_filtersUsed;
+    }
+
+
     /**
      * @var \Magento\LayeredNavigation\Block\Navigation
      */
@@ -44,7 +56,7 @@ class Products extends \Glugox\PDF\Model\Provider\Products implements \Glugox\PD
      * @param array $categories
      * @return \Magento\Framework\Api\ExtensibleDataInterface
      */
-    public function getProductsByAnchorCategory(\Magento\Catalog\Model\Category $category) {
+    public function getProductsByAnchorCategory(\Magento\Catalog\Model\Category $category, \Glugox\PDF\Model\PDFResult $pdfResult = null) {
 
         $this->_helper->setRegisteredLayerCategory($category);
         $this->_layerResolver->get(\Magento\Catalog\Model\Layer\Resolver::CATALOG_LAYER_CATEGORY);
@@ -66,10 +78,22 @@ class Products extends \Glugox\PDF\Model\Provider\Products implements \Glugox\PD
         // reset limit from toolbar
         $collection->setPageSize($this->_helper->getConfigObject()->getMaxNumberOfProducts());
 
+        $this->_filtersUsed = [];
         $filters = $this->_navigation->getFilters();
+
+        /** @var \Magento\Catalog\Model\Layer\Filter\AbstractFilter $filter */
         foreach ($filters as $filter) {
             $filter->apply($this->_helper->getRequest());
+            $reqVar = $filter->getRequestVar();
+            if($reqVal = $this->_helper->getRequest()->getParam($reqVar)){
+                $this->_filtersUsed[$reqVar] = $reqVal;
+            }
         }
+
+        if($pdfResult && \count($this->_filtersUsed)){
+            $pdfResult->setFiltersUsed($this->_filtersUsed);
+        }
+
         $layer->apply();
 
         return $collection;
@@ -82,7 +106,7 @@ class Products extends \Glugox\PDF\Model\Provider\Products implements \Glugox\PD
      * @param array $categories
      * @return \Magento\Framework\Api\ExtensibleDataInterface
      */
-    public function getProductsByCategories(array $categories, $onlyCount = false) {
+    public function getProductsByCategories(array $categories, \Glugox\PDF\Model\PDFResult $pdfResult = null, $onlyCount=false) {
 
         if (\count($categories) > 1) {
             throw new \Glugox\PDF\Exception\PDFException(__("Multiple categories not implemented yet!"));
@@ -94,9 +118,9 @@ class Products extends \Glugox\PDF\Model\Provider\Products implements \Glugox\PD
         }
         if (!$category->getIsAnchor()) {
             //throw new \Glugox\PDF\Exception\PDFException(__("Non anchor categories not implemented yet!"));
-            return parent::getProductsByCategories($categories, $onlyCount);
+            return parent::getProductsByCategories($categories, $pdfResult);
         } else {
-            return $this->getProductsByAnchorCategory($category, $onlyCount);
+            return $this->getProductsByAnchorCategory($category, $pdfResult);
         }
     }
 

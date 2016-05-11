@@ -12,6 +12,7 @@ namespace Glugox\PDF\Model\Renderer\Block\Product;
 
 
 use Glugox\PDF\Model\Renderer\Block\MultilineText;
+use Glugox\PDF\Model\Renderer\Data\Style;
 
 class Price extends MultilineText
 {
@@ -71,12 +72,21 @@ class Price extends MultilineText
     }
 
     /**
+     * @return \Zend_Pdf $pdf
+     */
+    public function _render()
+    {
+        $this->buildLines();
+        return parent::_render();
+    }
+
+
+    /**
      * Initializes data needed for rendering
      * of this element.
      */
-    public function initialize(\Glugox\PDF\Model\Page\Config $config = null)
+    protected function buildLines()
     {
-        parent::initialize($config);
 
         $product = $this->getConfig()->getProduct();
         if(!$product || !$product instanceof \Magento\Catalog\Model\Product){
@@ -111,7 +121,7 @@ class Price extends MultilineText
                     $this->_lines[1] = $finalPriceFormatted;
                     $this->_textWidth = \max($this->_textWidth, $style->widthForStringUsingFontSize($finalPriceFormatted));
                     $this->_textHeight += $lineHeight;
-                    $discountedColor = "#cccccc";
+                    $discountedColor = $this->getStyle()->get(Style::STYLE_COLOR_PRICE_OLD);
                     $this->_lineColors = [
                         0 => ["color"=>$discountedColor, "line-through"=>true]
                     ];

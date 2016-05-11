@@ -55,12 +55,6 @@ class UpgradeSchema implements UpgradeSchemaInterface {
             ['nullable' => false],
             'Definition of what is to be written to the pdf.Use "glugox:pdf:create --help" command to see available arguments/options.'
         )->addColumn(
-            'pdf_url',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
-            ['nullable' => true],
-            'PDF URL'
-        )->addColumn(
             'pdf_file',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,

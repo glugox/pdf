@@ -26,7 +26,6 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
     const DATA_ID = 'pdf_id';
     const DATA_NAME = 'name';
     const DATA_SOURCE_DEFINITION = 'source_definition';
-    const DATA_PDF_URL = 'pdf_url';
     const DATA_PDF_FILE = 'pdf_file';
 
 
@@ -128,18 +127,6 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 ]
         );
 
-
-        $fieldset->addField(
-                self::DATA_PDF_URL, 'text', [
-            'label' => __('PDF URL'),
-            'name' => self::DATA_PDF_URL,
-            'required' => false,
-            'disabled' => $disabled,
-            'note' => __(
-                    'PDF URL if it is cached'
-            )
-                ]
-        );
 
         $fieldset->addField(
                 self::DATA_PDF_FILE, 'text', [

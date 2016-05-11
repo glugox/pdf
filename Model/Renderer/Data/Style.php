@@ -53,6 +53,10 @@ class Style
     const STYLE_DISPLAY                = 'display';
     const STYLE_FONT_WEIGHT            = 'font-weight';
 
+    // specific
+    const STYLE_COLOR_PRICE_OLD        = 'color-price-old';
+    const STYLE_MAX_LINES              = 'max-lines';
+
 
     const SUPPORDED_TYPES = [
 
@@ -64,7 +68,8 @@ class Style
         self::STYLE_POSITION,       self::STYLE_COLOR,          self::STYLE_FLOAT,
         self::STYLE_FONT_SIZE,      self::STYLE_TEXT_ALIGN,     self::STYLE_TEXT_VERTICAL_ALIGN,
         self::STYLE_TEXT_HORIZONTAL_ALIGN, self::STYLE_LINE_SPACING, self::STYLE_FONT,
-        self::STYLE_DISPLAY,        self::STYLE_FONT_WEIGHT
+        self::STYLE_DISPLAY,        self::STYLE_FONT_WEIGHT,   self::STYLE_COLOR_PRICE_OLD,
+        self::STYLE_MAX_LINES
     ];
 
 
@@ -87,7 +92,9 @@ class Style
         self::STYLE_FONT_BOLD => 'lib/internal/LinLibertineFont/LinLibertine_Bd-2.8.1.ttf',
         self::STYLE_COLOR => "#000000",
         self::STYLE_BG_COLOR => "#FFFFFF",
-        self::STYLE_DISPLAY => 'block'
+        self::STYLE_DISPLAY => 'block',
+        self::STYLE_COLOR_PRICE_OLD => '#cccccc',
+        self::STYLE_MAX_LINES => 0
     ];
 
 
@@ -328,25 +335,25 @@ class Style
                     list( $top, $right, $bottom, $left ) = $this->_process04Value($styleValue);
 
                     // set the values without override
-                    $this->set(self::STYLE_MARGIN_TOP, $top, false);
-                    $this->set(self::STYLE_MARGIN_RIGHT, $right, false);
-                    $this->set(self::STYLE_MARGIN_BOTTOM, $bottom, false);
-                    $this->set(self::STYLE_MARGIN_LEFT, $left, false);
+                    $this->set(self::STYLE_MARGIN_TOP, $top, true);
+                    $this->set(self::STYLE_MARGIN_RIGHT, $right, true);
+                    $this->set(self::STYLE_MARGIN_BOTTOM, $bottom, true);
+                    $this->set(self::STYLE_MARGIN_LEFT, $left, true);
                     break;
                 case self::STYLE_PADDING:
                     list( $top, $right, $bottom, $left ) = $this->_process04Value($styleValue);
 
                     // set the values without override
-                    $this->set(self::STYLE_PADDING_TOP, $top, false);
-                    $this->set(self::STYLE_PADDING_RIGHT, $right, false);
-                    $this->set(self::STYLE_PADDING_BOTTOM, $bottom, false);
-                    $this->set(self::STYLE_PADDING_LEFT, $left, false);
+                    $this->set(self::STYLE_PADDING_TOP, $top, true);
+                    $this->set(self::STYLE_PADDING_RIGHT, $right, true);
+                    $this->set(self::STYLE_PADDING_BOTTOM, $bottom, true);
+                    $this->set(self::STYLE_PADDING_LEFT, $left, true);
                     break;
                 case self::STYLE_TEXT_ALIGN:
                     list( $verticalAlign, $horizontalAlign ) = $this->_processAlignValue($styleValue);
 
-                    $this->set(self::STYLE_TEXT_VERTICAL_ALIGN, $verticalAlign, false);
-                    $this->set(self::STYLE_TEXT_HORIZONTAL_ALIGN, $horizontalAlign, false);
+                    $this->set(self::STYLE_TEXT_VERTICAL_ALIGN, $verticalAlign, true);
+                    $this->set(self::STYLE_TEXT_HORIZONTAL_ALIGN, $horizontalAlign, true);
                     break;
                 case self::STYLE_FLOAT:
                     if(!\in_array($styleValue, ["left", "right"])){

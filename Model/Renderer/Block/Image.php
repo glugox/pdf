@@ -104,12 +104,12 @@ class Image extends AbstractRenderer
             // write image to page
             $this->getPdfPage()->drawImage($image,$x1, $y1 - $imageHeight , $x1 + $imageWidth, $y1 );
 
-            if(!$this->getStyle()->get(Style::STYLE_HEIGHT)){
+            //if(!$this->getStyle()->get(Style::STYLE_HEIGHT)){
                 $bBox->setHeight($imageHeight);
-            }
-            if(!$this->getStyle()->get(Style::STYLE_WIDTH)){
+            //}
+            //if(!$this->getStyle()->get(Style::STYLE_WIDTH)){
                 $bBox->setWidth($imageWidth);
-            }
+            //}
         }
 
     }

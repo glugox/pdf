@@ -21,7 +21,7 @@ interface ProviderInterface {
     /**
      * Returns products by categories
      */
-    public function getProductsByCategories(array $categories);
+    public function getProductsByCategories(array $categories, \Glugox\PDF\Model\PDFResult $pdfResult = null, $onlyCount = false);
 
 
     /**
