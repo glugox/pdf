@@ -118,12 +118,8 @@ class CreateCommand extends Command {
 
         /** @var \Glugox\PDF\Model\PDFResult * */
         $pdfResult = $this->_pdfService->serve((string) $input, $this->getDefinition());
-
-
         $pdf = $pdfResult->getPdf();
-
-        $date = $this->_helper->getInstance('Magento\Framework\Stdlib\DateTime\DateTime')->date('Y-m-d_H-i-s');
-        $filename = $this->_varDirectory->getAbsolutePath("pdf/pdf-" . $date . ".pdf");
+        $filename = $pdfResult->getFileneme();
 
         $output->writeln('<info> Saving PDF to : ' . $filename . '  ...</info>');
 
