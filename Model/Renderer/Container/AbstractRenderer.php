@@ -34,6 +34,9 @@ class AbstractRenderer extends Element implements RendererInterface
     protected $_currentRenderingItem = null;
 
 
+    protected $_highestRenderedItem = null;
+
+
     /**
      * Initializes data needed for rendering
      * of this element.
@@ -323,8 +326,13 @@ class AbstractRenderer extends Element implements RendererInterface
 
                     $childMargin = $child->getStyle()->get(Style::STYLE_MARGIN);
                     if($child->getStyle()->canDisplay()){
-                        $minY = null === $minY ? $child->getBoundingBox()->getAbsY2() - $childMargin[0] : \min( $minY, $child->getBoundingBox()->getAbsY2() - $childMargin[0] );
-                        $maxY = null === $maxY ? $child->getBoundingBox()->getAbsY1() + $childMargin[2] : \max( $maxY, $child->getBoundingBox()->getAbsY1() + $childMargin[2] );
+                        $childMinY = $child->getBoundingBox()->getAbsY2() - $childMargin[0];
+                        $childMaxY = $child->getBoundingBox()->getAbsY1() + $childMargin[2];
+                        $minY = null === $minY ? $childMinY : \min( $minY, $childMinY );
+                        $maxY = null === $maxY ? $childMaxY : \max( $maxY, $childMaxY );
+                    }
+                    if(!$this->_highestRenderedItem || ($childMaxY - $childMinY) > $this->_highestRenderedItem->getBoundingBox()->getOuterHeight()){
+                        $this->_highestRenderedItem = $child;
                     }
                     if(Element::NEW_PAGE_FLAG === $rendered){
                         return $rendered;
@@ -359,6 +367,15 @@ class AbstractRenderer extends Element implements RendererInterface
     public function getCurrentRenderedItem(){
         return $this->_currentRenderingItem;
     }
+
+    /**
+     * @return \Glugox\PDF\Model\Renderer\RendererInterface
+     */
+    public function getHighestRenderedItem(){
+        return $this->_highestRenderedItem;
+    }
+
+
 
 
     /**

@@ -17,6 +17,14 @@ use Glugox\PDF\Model\Renderer\Element;
 class TextArea extends AbstractRenderer
 {
 
+
+    /**
+     * @return bool
+     */
+    public function hasData(){
+        return !empty($this->getSrc());
+    }
+
     /**
      * @return \Zend_Pdf $pdf
      */
@@ -25,7 +33,7 @@ class TextArea extends AbstractRenderer
 
         $bBox = $this->getBoundingBox();
         $style = $this->getStyle();
-        if(empty($this->getSrc())){
+        if(!$this->hasData()){
             $bBox->setHeight(0)->setWidth(0);
             $style->set(Style::STYLE_MARGIN, 0);
             $style->set(Style::STYLE_PADDING, 0);

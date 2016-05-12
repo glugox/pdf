@@ -24,16 +24,18 @@ class Item extends \Glugox\PDF\Model\Renderer\Container\AbstractRenderer
      * Than every next repeating item will get the previous item size
      * as the estimated size.
      *
+     * TODO: Estimate size based on max lines | 2-3, and price with 2 lines (discount)
+     *
      * @return array
      */
     public function _estimateSize(){
         if( null === $this->_estimatedSize ){
             $this->_estimatedSize = [0,0];
         }
-        if( $this->getParent() && $this->getParent()->getLastRenderedItem() ){
+        if( $this->getParent() && $this->getParent()->getHighestRenderedItem() ){
             $this->_estimatedSize = [
-                $this->getParent()->getLastRenderedItem()->getBoundingBox()->getWidth(),
-                $this->getParent()->getLastRenderedItem()->getBoundingBox()->getHeight()
+                $this->getParent()->getHighestRenderedItem()->getBoundingBox()->getWidth(),
+                $this->getParent()->getHighestRenderedItem()->getBoundingBox()->getHeight()
             ];
         }
         if(!$this->getStyle()->get(Style::STYLE_HEIGHT)){

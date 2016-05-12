@@ -76,6 +76,13 @@ class MultilineText extends AbstractRenderer
 
 
 
+    /**
+     * @return bool
+     */
+    public function hasData(){
+        return (!empty($this->getSrc()) || !empty($this->_lines));
+    }
+
 
     /**
      * @return \Zend_Pdf $pdf
@@ -85,7 +92,7 @@ class MultilineText extends AbstractRenderer
 
         $bBox = $this->getBoundingBox();
         $style = $this->getStyle();
-        if(empty($this->getSrc())){
+        if(!$this->hasData()){
 
             $bBox->setHeight(0)->setWidth(0);
             $style->set(Style::STYLE_MARGIN, 0);
@@ -132,7 +139,7 @@ class MultilineText extends AbstractRenderer
                     }else{
 
                         $line = \trim($line);
-                        if($maxLines && \count($this->_lines) >= ($maxLines-1) && $k < ($n-1)){ // if this is last line allowed, but would have more text
+                        if($maxLines && \count($this->_lines) >= ($maxLines-1) && $k < $n){ // if this is last line allowed, but would have more text
                             $truncateFlag = true;
                             $line = \substr($line, 0, \strlen($line) - \strlen($this->_truncSuffix)) . $this->_truncSuffix;
                         }
