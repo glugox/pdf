@@ -69,7 +69,7 @@ class Download extends \Glugox\PDF\Controller\FrontController {
 
 
         $pdfModel = $this->_service->getOrCreate([
-            "name" => "Category: " . $category->getName(),
+            "name" => $category->getName(),
             "source_definition" => "-c" . $category->getId() . $filtersSourceString,
             "customer_id" => (int) $this->_pdfHelper->getSession()->getCustomerId()
         ]);
@@ -83,7 +83,7 @@ class Download extends \Glugox\PDF\Controller\FrontController {
             }else{
                 try {
                     $pdfResult = $pdfModel->createPdf($this->_service);
-                    $pdfResult->setCategory($category);
+                    $pdfResult->setCategories([$category]);
                 } catch (\Glugox\PDF\Exception\PDFException $pex) {
                     $this->messageManager->addNotice(__($pex->getMessage()));
                 } catch (Exception $ex) {

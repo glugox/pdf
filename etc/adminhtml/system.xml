@@ -84,6 +84,14 @@
                     <label>Body padding</label>
                     <comment>Measurement is in points (1/72 of an inch)</comment>
                 </field>
+                <field id="display_category_title" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display Category Title</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="display_category_description" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display Category Description</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
             </group>
             <group id="typography" showInDefault="1" sortOrder="30">
                 <label>Typography</label>

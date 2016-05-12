@@ -22,8 +22,17 @@ class TextArea extends AbstractRenderer
      */
     public function _render()
     {
+
         $bBox = $this->getBoundingBox();
         $style = $this->getStyle();
+        if(empty($this->getSrc())){
+            $bBox->setHeight(0)->setWidth(0);
+            $style->set(Style::STYLE_MARGIN, 0);
+            $style->set(Style::STYLE_PADDING, 0);
+            $style->set(Style::STYLE_DISPLAY, 'none');
+            return false;
+        }
+
         $padding = $style->get(Style::STYLE_PADDING);
         $style->applyToPage($this->getPdfPage());
 
@@ -57,7 +66,7 @@ class TextArea extends AbstractRenderer
         );
 
         if(!$this->getStyle()->get(Style::STYLE_HEIGHT)){
-            $bBox->setHeight($textHeight - $style->get(Style::STYLE_LINE_SPACING));
+            $bBox->setHeight($textHeight);
         }
 
     }

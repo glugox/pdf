@@ -32,7 +32,7 @@ class Download extends \Glugox\PDF\Controller\FrontController {
         }
 
         $pdfModel = $this->_service->getOrCreate([
-            "name" => "Product: " . $product->getName(),
+            "name" => $product->getName(),
             "source_definition" => $product->getSku(),
             "customer_id" => (int) $this->_pdfHelper->getSession()->getCustomerId()
         ]);
@@ -49,6 +49,7 @@ class Download extends \Glugox\PDF\Controller\FrontController {
                 return $this->_cache->getResult($pdfModel->getName(), $pdfModel->getPdfFile());
             }else{
                 $pdfResult = $pdfModel->createPdf($this->_service);
+                $pdfResult->setProducts([$product]);
                 $pdfPath = $pdfResult->getFileneme();
                 $pdfModel->setPdfFile($pdfPath)->save();
                 return $this->_fileFactory->create($pdfPath, $pdfResult->getPdf()->render(), DirectoryList::ROOT, 'application/pdf');

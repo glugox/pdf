@@ -51,21 +51,52 @@ class PDFService implements PDFServiceInterface {
     protected $_cache;
 
     /**
+     * @var Page\Context
+     */
+    protected $_context;
+
+    /**
+     * @var Page\Config
+     */
+    protected $_pageConfig;
+
+    /**
+     * @var \Magento\Catalog\Api\CategoryRepositoryInterface
+     */
+    protected $categoryRepository;
+
+    /**
      *
      * @param PDFFactory $pdfFactory
      * @param \Glugox\PDF\Helper\Data $helper
      */
     public function __construct(
+            \Glugox\PDF\Model\Page\Context $context,
             PDFFactory $pdfFactory,
             \Glugox\PDF\Helper\Data $helper,
             \Glugox\PDF\Model\Provider\PDF\ProviderInterface $pdfProvider,
-            \Glugox\PDF\Model\Cache $cache
+            \Glugox\PDF\Model\Cache $cache,
+            \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository
     ) {
+        $this->_context = $context;
         $this->_pdfFactory = $pdfFactory;
         $this->_helper = $helper;
         $this->_pdfProvider = $pdfProvider;
         $this->_cache = $cache;
+        $this->_pageConfig = $context->getPageConfig();
+        $this->categoryRepository = $categoryRepository;
 
+    }
+
+
+    /**
+     * Return page configuration
+     *
+     * @return \Glugox\PDF\Model\Page\Config
+     */
+    public function getConfig()
+    {
+        return $this->_pageConfig;
     }
 
 
@@ -165,9 +196,7 @@ class PDFService implements PDFServiceInterface {
             }
         }
 
-        /*
-         * TODO: Add filters when on layered cat in filename
-         */
+        
         $pdfResult->createFileName( (string) $this->_input);
         return $pdfResult; //getFiltersUsed
     }
@@ -249,6 +278,12 @@ class PDFService implements PDFServiceInterface {
         $pdf = null;
 
         /** @var \Magento\Framework\Api\ExtensibleDataInterface **/
+        $category = $this->categoryRepository->get($categoryId, $this->_helper->getCurrentStoreId());
+        if($category){
+            $this->getConfig()->setPdfTitle($category->getName());
+            $this->getConfig()->setPdfDescription($category->getDescription());
+        }
+
         $products = $this->getProductsProvider()->getProductsByCategories([$categoryId], $pdfResult);
 
         if (null === $products) {

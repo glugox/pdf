@@ -270,6 +270,9 @@ class BoundingBox
     public function getWidth( $includePadding=true, $includeMargin=false )
     {
         $width = $this->width;
+        if(!$width){
+            return 0;
+        }
         if($this->getElement()){
             if(!$this->getElement()->getStyle()->canDisplay()){
                 return 0;
@@ -310,6 +313,9 @@ class BoundingBox
     public function getHeight( $includePadding=true, $includeMargin=false )
     {
         $height = $this->height;
+        if(!$height){
+            return 0;
+        }
         if($this->getElement()){
             if(!$this->getElement()->getStyle()->canDisplay()){
                 return 0;

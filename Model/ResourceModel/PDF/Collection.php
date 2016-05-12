@@ -14,6 +14,9 @@ namespace Glugox\PDF\Model\ResourceModel\PDF;
  */
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
+
+    protected $_idFieldName = \Glugox\PDF\Model\PDF::PDF_ID;
+
     /**
      * Resource collection initialization.
      *

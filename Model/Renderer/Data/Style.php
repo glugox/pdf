@@ -87,7 +87,7 @@ class Style
 
     const STYLE_DEFAULTS = [
         self::STYLE_FONT_SIZE => 12,
-        self::STYLE_LINE_SPACING => (0.3 * 12),
+        self::STYLE_LINE_SPACING => 10 /* (0.3 * 12)*/,
         self::STYLE_FONT => 'lib/internal/LinLibertineFont/LinLibertine_Re-4.4.1.ttf',
         self::STYLE_FONT_BOLD => 'lib/internal/LinLibertineFont/LinLibertine_Bd-2.8.1.ttf',
         self::STYLE_COLOR => "#000000",

@@ -35,10 +35,14 @@ class PDF extends \Magento\Framework\Model\AbstractModel {
      */
     const CURRENT_PDF_KEY = 'current_pdf_key';
     const DIRECTORY_PATH = 'pdf';
+    const PDF_ID = 'pdf_id';
 
 
     /** @var \Glugox\PDF\Helper\Data */
     protected $_helper;
+
+
+    protected $_cache;
 
 
     /**
@@ -52,12 +56,14 @@ class PDF extends \Magento\Framework\Model\AbstractModel {
             \Magento\Framework\Model\Context $context,
             \Magento\Framework\Registry $registry,
             \Glugox\PDF\Helper\Data $helper,
+            \Glugox\PDF\Model\Cache $cache,
             \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
             \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
             array $data = []
     ) {
 
         $this->_helper = $helper;
+        $this->_cache = $cache;
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
 
@@ -110,6 +116,17 @@ class PDF extends \Magento\Framework\Model\AbstractModel {
         }
 
         return $this;
+    }
+
+    /**
+     * Processing manipulation after main transaction commit
+     *
+     * @return $this
+     */
+    public function afterDeleteCommit()
+    {
+        $this->_cache->delete($this->getPdfFile());
+        return parent::afterDeleteCommit();
     }
 
 

@@ -19,7 +19,7 @@
         <container name="root">
             <container name="wrapper" order="1" style="">
                 <container name="product-page" style="background-color:#ffffff; padding:28 35;">
-                    <container order="1" name="header-wrapper" style="padding:0; margin:0 0 20 0;">
+                    <container order="1" name="header-wrapper" style="padding:0; margin:0 0 10 0;">
                         <block order="1" renderer="Glugox\PDF\Model\Renderer\Block\Logo" name="logo"
                                style="text-align:top left; background-color:#cc00ee; height:45; float:left; display:block; margin:0;">
                         </block>
@@ -31,7 +31,17 @@
                                style="height:1; padding:0; color:#f7f7f7; margin:10 0">
                         </block>
                     </container>
-                    <container renderer="Glugox\PDF\Model\Renderer\Container\Repeater" order="2" name="product-container" src="config:getProductItems">
+                    <container order="2" name="title-container" style="margin:10 0 20 0;">
+                        <block name="pdf-title" order="1" src="config:getPdfTitle"
+                               renderer="Glugox\PDF\Model\Renderer\Block\MultilineText"
+                               style="color:#333333; font-size:32; background-color:#ff0000; margin:0 0 15 0">
+                        </block>
+                        <block name="pdf-description" order="2" src="config:getPdfDescription"
+                               renderer="Glugox\PDF\Model\Renderer\Block\MultilineText"
+                               style="color:#333333; font-size:13; background-color:#ff0000; margin:0 0 10 0">
+                        </block>
+                    </container>
+                    <container renderer="Glugox\PDF\Model\Renderer\Container\Repeater" order="3" name="product-container" src="config:getProductItems" style="margin:10 0 0 0;">
                         <container order="1"
                                name="repeater-item"
                                renderer="Glugox\PDF\Model\Renderer\Container\Product\Item"

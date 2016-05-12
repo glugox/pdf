@@ -26,6 +26,8 @@
                 <display_description_in_single_mode>1</display_description_in_single_mode>
                 <display_attributes_in_single_mode>1</display_attributes_in_single_mode>
                 <body_padding>20</body_padding>
+                <display_category_title>1</display_category_title>
+                <display_category_description>1</display_category_description>
             </design>
             <typography>
                 <single_title_size>30</single_title_size>

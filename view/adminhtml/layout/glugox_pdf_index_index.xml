@@ -1,24 +1,8 @@
 <?xml version="1.0"?>
-<!--
- * This file is part of Glugox.
- *
- * (c) Glugox <glugox@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
--->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <head>
-        <css src="Glugox_PDF::pdf.css"/>
-    </head>
-    <update handle="glugox_pdf_grid_block"/>
     <body>
-        <referenceContainer name="page.main.actions">
-            <block class="Magento\Backend\Block\Template" name="run" template="Glugox_PDF::pdf/totalbar/run.phtml"/>
+        <referenceContainer name="content">
+            <uiComponent name="pdf_pdf_listing"/>
         </referenceContainer>
-        <referenceBlock name="content">
-            <block class="Magento\Backend\Block\Template" name="glugox_pdf.popup.container" template="Glugox_PDF::pdf/popup_container.phtml" before="-"/>
-            <block class="Glugox\PDF\Block\Adminhtml\Main" name="glugox_pdf.main"/>
-        </referenceBlock>
     </body>
 </page>

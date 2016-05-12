@@ -37,16 +37,6 @@ class PDFResult extends \Magento\Framework\DataObject{
     protected $_fileName = null;
 
 
-    /**
-     * @var array|\Magento\Framework\Data\Collection
-     */
-    protected $_categories = null;
-
-    /**
-     * @var array|\Magento\Framework\Data\Collection
-     */
-    protected $_products = null;
-
 
     /**
      * PDFResult constructor.
@@ -59,21 +49,6 @@ class PDFResult extends \Magento\Framework\DataObject{
         $this->_pdfHelper = $helper;
     }
 
-
-    /**
-     * @param array|\Magento\Framework\Data\Collection $category
-     */
-    public function setCategories($categories){
-        $this->_categories = $categories;
-    }
-
-
-    /**
-     * @param array|\Magento\Framework\Data\Collection $products
-     */
-    public function setProducts($products){
-        $this->_products = $products;
-    }
 
 
     /**
@@ -119,23 +94,13 @@ class PDFResult extends \Magento\Framework\DataObject{
      * Creates filename with full relative path for the pdf,
      * that is available in 'getFileneme()' call.
      *
-     * TODO: Add filters when on layered cat in filename
-     *
      */
     public function createFileName($source){
 
-
-
         $customerId = (int) $this->_pdfHelper->getSession()->getCustomerId();
-        $date = $this->_objectManager->get('Magento\Framework\Stdlib\DateTime\DateTime')->date('YmdHis');
-        $this->_fileName = \md5($source);
+        //$date = $this->_objectManager->get('Magento\Framework\Stdlib\DateTime\DateTime')->date('YmdHis');
+        $this->_fileName = \md5($source . '_' . $customerId);
 
-
-        /*if(strpos($this->_fileName, '-c') === 0){
-            $this->_fileName = 'cat-' . \substr($this->_fileName, 2);
-        }
-        $this->_fileName .= '_u-' . $customerId;
-        $this->_fileName .= '_' . $date;*/
 
         if(!empty(Cache::STORAGE_DIR)){
             $this->_fileName = DirectoryList::VAR_DIR . '/' . PDF::DIRECTORY_PATH . '/' . $this->_fileName . '.pdf';
