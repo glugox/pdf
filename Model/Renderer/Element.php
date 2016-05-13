@@ -176,6 +176,16 @@ abstract class Element implements RendererInterface
 
 
     /**
+     * Loop styling children , and if some default values are not
+     * set for the child, inherit that vlaue from parent.
+     */
+
+    public function inheritStyling(){
+        $this->getStyle()->inheritFromParent();
+    }
+
+
+    /**
      * Updates properties needed for rendering
      * like bounding box (x,y,width,height) after page state
      * is changed (like rendered new element)
@@ -515,7 +525,7 @@ abstract class Element implements RendererInterface
 
             // debug
             if ($this->isDebugMode()) {
-               // $this->_drawBoundingBox();
+                $this->_drawBoundingBox();
             }
 
         }

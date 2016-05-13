@@ -64,6 +64,20 @@ class AbstractRenderer extends Element implements RendererInterface
         }
     }
 
+
+    /**
+     * Loop styling children , and if some default values are not
+     * set for the child, inherit that vlaue from parent.
+     */
+    public function inheritStyling(){
+        $this->getStyle()->inheritFromParent();
+        if($this->hasChildren()){
+            foreach ($this->getChildren() as $child) {
+                $child->inheritStyling();
+            }
+        }
+    }
+
     /**
      * Updates children properties needed for rendering
      * like bounding box (x,y,width,height) after page state
@@ -330,10 +344,12 @@ class AbstractRenderer extends Element implements RendererInterface
                         $childMaxY = $child->getBoundingBox()->getAbsY1() + $childMargin[2];
                         $minY = null === $minY ? $childMinY : \min( $minY, $childMinY );
                         $maxY = null === $maxY ? $childMaxY : \max( $maxY, $childMaxY );
+
+                        if(!$this->_highestRenderedItem || ($childMaxY - $childMinY) > $this->_highestRenderedItem->getBoundingBox()->getOuterHeight()){
+                            $this->_highestRenderedItem = $child;
+                        }
                     }
-                    if(!$this->_highestRenderedItem || ($childMaxY - $childMinY) > $this->_highestRenderedItem->getBoundingBox()->getOuterHeight()){
-                        $this->_highestRenderedItem = $child;
-                    }
+
                     if(Element::NEW_PAGE_FLAG === $rendered){
                         return $rendered;
 

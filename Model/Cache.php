@@ -11,6 +11,7 @@
 namespace Glugox\PDF\Model;
 
 
+use Glugox\PDF\Model\Page\Config;
 use Magento\Framework\App\Filesystem\DirectoryList;
 
 class Cache
@@ -35,13 +36,29 @@ class Cache
 
 
     /**
+     * @var \Glugox\PDF\Model\Page\Config
+     */
+    protected $_config;
+
+
+    /**
      * Cache constructor.
      * @param \Magento\Framework\Filesystem $filesystem
      */
-    public function __construct(\Magento\Framework\Filesystem $filesystem, \Magento\Framework\App\Response\Http\FileFactory $fileFactory)
+    public function __construct(\Magento\Framework\Filesystem $filesystem, \Magento\Framework\App\Response\Http\FileFactory $fileFactory, \Glugox\PDF\Model\Page\Config $config)
     {
         $this->_rootDirectory = $filesystem->getDirectoryRead(DirectoryList::ROOT);
         $this->_fileFactory = $fileFactory;
+        $this->_config = $config;
+    }
+
+
+    /**
+     * @return Page\Config
+     */
+    public function getConfig()
+    {
+        return $this->_config;
     }
 
 
@@ -50,7 +67,10 @@ class Cache
      * @return bool
      */
     public function has( $filename ){
-        return $this->_rootDirectory->isFile($filename);
+        if($this->getConfig()->getData(Config::CACHE_ENABLED)){
+            return $this->_rootDirectory->isFile($filename);
+        }
+        return false;
     }
 
 

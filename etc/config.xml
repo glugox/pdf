@@ -22,6 +22,8 @@
                 <display_price>1</display_price>
                 <display_categories>1</display_categories>
                 <display_sku>1</display_sku>
+                <display_title_in_single_mode>1</display_title_in_single_mode>
+                <display_title_in_list_mode>1</display_title_in_list_mode>
                 <list_title_max_lines>3</list_title_max_lines>
                 <display_description_in_single_mode>1</display_description_in_single_mode>
                 <display_attributes_in_single_mode>1</display_attributes_in_single_mode>

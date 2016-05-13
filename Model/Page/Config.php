@@ -47,6 +47,8 @@ class Config extends \Magento\Framework\DataObject
     const DISPLAY_LOGO = self::PRE_D . 'display_logo';
     const DISPLAY_PRICE = self::PRE_D . 'display_price';
     const DISPLAY_SKU = self::PRE_D . 'display_sku';
+    const DISPLAY_TITLE_IN_SINGLE_MODE = self::PRE_D . 'display_title_in_single_mode';
+    const DISPLAY_TITLE_IN_LIST_MODE = self::PRE_D . 'display_title_in_list_mode';
     const LIST_TITLE_MAX_LINES = self::PRE_D . 'list_title_max_lines';
     const DISPLAY_STORE_NAME = self::PRE_D . 'display_store_name';
     const HEADER_ON_EACH_PAGE = self::PRE_D . 'header_on_each_page';
@@ -106,6 +108,8 @@ class Config extends \Magento\Framework\DataObject
      */
     const BLOCK_DEFAULT_HEIGHT = 0;
     const CONTAINER_DEFAULT_HEIGHT = 0;
+    const USER_FONTS_PATH = 'pub/media/fonts/default';
+    const LIST_IMG_DEFAULT_WIDTH = 120;
 
 
     /**
@@ -305,11 +309,38 @@ class Config extends \Magento\Framework\DataObject
      * @param bool $isBool
      * @param isInt $
      */
-    protected function processConfigStyle($rootRenderer, $pageSelector, $configPath, $styleKey, $isBool = false, $isInt = false)
+    protected function processConfigStyle($rootRenderer, $item)
     {
-        $value = $this->getData($configPath);
+
+        $pageSelector = $item[0];
+        $configPath = $item[1];
+        $styleKey = $item[2];
+        $isBool = isset($item[3]) ? $item[3] : false;
+        $isInt = isset($item[4]) ? $item[4] : false;
+        $default = isset($item[5]) ? $item[5] : null;
+
+        if(is_array($configPath)){
+            if($isBool){
+                /**
+                 * If operator is 'OR', we nned only one true value,
+                 * alse it is and and we need al values to be true.
+                 */
+                $value = $configPath['operator'] === 'OR' ? false : true;
+                foreach ($configPath['items'] as $configPathItem) {
+                    $value = $configPath['operator'] === 'OR' ? ($value || $this->getData($configPathItem)) : ($value && $this->getData($configPathItem));
+                }
+            }else{
+                //
+            }
+        }else{
+            $value = $this->getData($configPath);
+        }
+
         if (empty($value)) {
-            return;
+            if(!empty($default)){
+                $value = $default;
+            }
+            //return;
         }
         if ($isBool) {
             $value = (boolean)$value;
@@ -340,93 +371,62 @@ class Config extends \Magento\Framework\DataObject
         $data = [
             // page
             ["wrapper/product-page", self::BODY_PADDING, Style::STYLE_PADDING, false, true],
-            ["wrapper/product-page", self::COLOR_TEXT, Style::STYLE_COLOR, false, false],
+            ["wrapper/product-page", self::COLOR_TEXT, Style::STYLE_COLOR],
+            ["wrapper/product-page", self::FONT_REGULAR, Style::STYLE_FONT],
+            ["wrapper/product-page", self::FONT_BOLD, Style::STYLE_FONT_BOLD],
 
             // header
             ["wrapper/product-page/header-wrapper/logo", self::LOGO_HEIGHT, Style::STYLE_HEIGHT, false, true],
-            ["wrapper/product-page/header-wrapper/logo", self::DISPLAY_LOGO, Style::STYLE_DISPLAY, true, false],
+            ["wrapper/product-page/header-wrapper/logo", self::DISPLAY_LOGO, Style::STYLE_DISPLAY, true],
             ["wrapper/product-page/header-wrapper/store-name", self::LOGO_HEIGHT, Style::STYLE_HEIGHT, false, true],
-            ["wrapper/product-page/header-wrapper/store-name", self::DISPLAY_STORE_NAME, Style::STYLE_DISPLAY, true, false],
-            ["wrapper/product-page/header-wrapper/header-line", self::COLOR_LINES, Style::STYLE_COLOR, false, false],
-            ["wrapper/product-page/header-wrapper/store-name", self::COLOR_STORE_NAME, Style::STYLE_COLOR, false, false],
+            ["wrapper/product-page/header-wrapper/store-name", self::DISPLAY_STORE_NAME, Style::STYLE_DISPLAY, true],
+            ["wrapper/product-page/header-wrapper/header-line", self::COLOR_LINES, Style::STYLE_COLOR],
+            ["wrapper/product-page/header-wrapper/header-line", [
+                'items' => [
+                    self::DISPLAY_LOGO,
+                    self::DISPLAY_STORE_NAME
+                ],
+                'operator' => 'OR'
+            ], Style::STYLE_DISPLAY, true],
+            ["wrapper/product-page/header-wrapper/store-name", self::COLOR_STORE_NAME, Style::STYLE_COLOR],
 
             // content
 
-            [$pCont . "/price-container/product-price", self::DISPLAY_PRICE, Style::STYLE_DISPLAY, true, false],
-            [$pCont . "/repeater-item/price", self::DISPLAY_PRICE, Style::STYLE_DISPLAY, true, false],
-            [$pCont . "/repeater-item/price", self::COLOR_PRICE, Style::STYLE_COLOR, false, false],
-            [$pCont . "/repeater-item/title", self::COLOR_TITLE, Style::STYLE_COLOR, false, false],
+            [$pCont . "/price-container/product-price", self::DISPLAY_PRICE, Style::STYLE_DISPLAY, true],
+            [$pCont . "/repeater-item/price", self::DISPLAY_PRICE, Style::STYLE_DISPLAY, true],
+            [$pCont . "/repeater-item/price", self::COLOR_PRICE, Style::STYLE_COLOR],
+            [$pCont . "/repeater-item/price", self::COLOR_PRICE_OLD, Style::STYLE_COLOR_PRICE_OLD],
+            [$pCont . "/repeater-item/title", self::COLOR_TITLE, Style::STYLE_COLOR],
+            [$pCont . "/repeater-item/title", self::DISPLAY_TITLE_IN_LIST_MODE, Style::STYLE_DISPLAY, true],
             [$pCont . "/repeater-item/title", self::LIST_TITLE_MAX_LINES, Style::STYLE_MAX_LINES, false, true],
-            [$pCont . "/title-container/product-categories", self::DISPLAY_CATEGORIES, Style::STYLE_DISPLAY, true, false],
-            [$pCont . "/title-container/product-sku", self::DISPLAY_SKU, Style::STYLE_DISPLAY, true, false],
-            [$pCont . "/desc-container/description", self::DISPLAY_DESCRIPTION_IN_SINGLE_MODE, Style::STYLE_DISPLAY, true, false],
-            [$pCont . "/attr-container/attributes", self::DISPLAY_ATTRIBUTES_IN_SINGLE_MODE, Style::STYLE_DISPLAY, true, false],
+            [$pCont . "/repeater-item/title", self::LIST_TITLE_SIZE, Style::STYLE_FONT_SIZE, false, true],
+            [$pCont . "/repeater-item/media", self::SHOW_IMAGE_IN_LIST_MODE, Style::STYLE_DISPLAY, true],
+            [$pCont . "/repeater-item", self::LIST_IMAGE_MAX_WIDTH, Style::STYLE_WIDTH, false, true, self::LIST_IMG_DEFAULT_WIDTH],
+            [$pCont . "/repeater-item/media", self::LIST_IMAGE_MAX_WIDTH, Style::STYLE_WIDTH, false, true, self::LIST_IMG_DEFAULT_WIDTH],
+            [$pCont . "/repeater-item/media", self::LIST_IMAGE_MAX_HEIGHT, Style::STYLE_HEIGHT, false, true],
+            [$pCont . "/title-container/product-categories", self::DISPLAY_CATEGORIES, Style::STYLE_DISPLAY, true],
+            [$pCont . "/title-container/product-sku", self::DISPLAY_SKU, Style::STYLE_DISPLAY, true],
+            [$pCont . "/desc-container/description", self::DISPLAY_DESCRIPTION_IN_SINGLE_MODE, Style::STYLE_DISPLAY, true],
+            [$pCont . "/attr-container/attributes", self::DISPLAY_ATTRIBUTES_IN_SINGLE_MODE, Style::STYLE_DISPLAY, true],
             [$pCont . "/title-container/product-title", self::SINGE_TITLE_SIZE, Style::STYLE_FONT_SIZE, false, true],
-            [$pCont . "/title-container/product-categories", self::COLOR_CATEGORIES, Style::STYLE_COLOR, false, false],
-            [$pCont . "/title-container/product-sku", self::COLOR_SKU, Style::STYLE_COLOR, false, false],
-            [$pCont . "/price-container/product-price", self::COLOR_PRICE, Style::STYLE_COLOR, false, false],
-            [$pCont . "/price-container/product-price", self::COLOR_PRICE_OLD, Style::STYLE_COLOR_PRICE_OLD, false, false],
-            [$pCont . "/title-container/product-title", self::COLOR_TITLE, Style::STYLE_COLOR, false, false],
+            [$pCont . "/title-container/product-categories", self::COLOR_CATEGORIES, Style::STYLE_COLOR],
+            [$pCont . "/title-container/product-sku", self::COLOR_SKU, Style::STYLE_COLOR],
+            [$pCont . "/price-container/product-price", self::COLOR_PRICE, Style::STYLE_COLOR],
+            [$pCont . "/price-container/product-price", self::COLOR_PRICE_OLD, Style::STYLE_COLOR_PRICE_OLD],
+            [$pCont . "/title-container/product-title", self::COLOR_TITLE, Style::STYLE_COLOR],
+            [$pCont . "/title-container/product-title", self::DISPLAY_TITLE_IN_SINGLE_MODE, Style::STYLE_DISPLAY, true],
+            [$pCont . "/media-container/media", self::SHOW_IMAGE_IN_SINGLE_MODE, Style::STYLE_DISPLAY, true]
 
         ];
 
         foreach ($data as $item) {
-            $this->processConfigStyle($rootRenderer, $item[0], $item[1], $item[2], $item[3], $item[4]);
+            $this->processConfigStyle($rootRenderer, $item);
         }
 
-
-        // Title font size in list mode
-        $titleFontSizeLM = (int)$this->getData(self::LIST_TITLE_SIZE);
-
-        // Font for the regular texts
-        $font = $this->getData(self::FONT_REGULAR);
-
-        // Font for the bold texts
-        $fontBold = $this->getData(self::FONT_BOLD);
-
-        // Lines color
-        $linesColor = $this->getData(self::COLOR_LINES);
-
-        // Categories color
-        $categoriesColor = $this->getData(self::COLOR_CATEGORIES);
-
-        // SKU color
-        $skuColor = $this->getData(self::COLOR_SKU);
-
-        // Store name color
-        $storeNameColor = $this->getData(self::COLOR_STORE_NAME);
-
-        // Price color
-        $priceColor = $this->getData(self::COLOR_PRICE);
-
-        // Discounted price color
-        $discountedPriceColor = $this->getData(self::COLOR_PRICE_OLD);
-
-        // Title color
-        $titleColor = $this->getData(self::COLOR_TITLE);
-
-        // Text color
-        $textColor = $this->getData(self::COLOR_TEXT);
-
-        // Show image in single mode
-        $showImageSM = (boolean)$this->getData(self::SHOW_IMAGE_IN_SINGLE_MODE);
-
-        // Maximum width of image in single mode
-        $imageWidthSM = (int)$this->getData(self::SINGLE_IMAGE_MAX_WIDTH);
-
-        // Maximum height of image in single mode
-        $imageHeightSM = (int)$this->getData(self::SINGLE_IMAGE_MAX_HEIGHT);
-
-        // Show image in list mode
-        $showImageLM = (boolean)$this->getData(self::SHOW_IMAGE_IN_LIST_MODE);
-
-        // Maximum width of image in list mode
-        $imageWidthLM = (int)$this->getData(self::LIST_IMAGE_MAX_WIDTH);
-
-        // Maximum height of image in list mode
-        $imageHeightLM = (int)$this->getData(self::LIST_IMAGE_MAX_HEIGHT);
-
     }
+
+
+
 
 
     /**

@@ -12,6 +12,7 @@
 namespace Glugox\PDF\Model\Renderer\Data;
 
 use Glugox\PDF\Exception\PDFException;
+use Glugox\PDF\Model\Page\Config;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\TestFramework\Inspection\Exception;
 
@@ -67,7 +68,7 @@ class Style
         self::STYLE_PADDING_BOTTOM, self::STYLE_PADDING_LEFT,   self::STYLE_PADDING,
         self::STYLE_POSITION,       self::STYLE_COLOR,          self::STYLE_FLOAT,
         self::STYLE_FONT_SIZE,      self::STYLE_TEXT_ALIGN,     self::STYLE_TEXT_VERTICAL_ALIGN,
-        self::STYLE_TEXT_HORIZONTAL_ALIGN, self::STYLE_LINE_SPACING, self::STYLE_FONT,
+        self::STYLE_TEXT_HORIZONTAL_ALIGN, self::STYLE_LINE_SPACING, self::STYLE_FONT, self::STYLE_FONT_BOLD,
         self::STYLE_DISPLAY,        self::STYLE_FONT_WEIGHT,   self::STYLE_COLOR_PRICE_OLD,
         self::STYLE_MAX_LINES
     ];
@@ -81,7 +82,9 @@ class Style
 
         self::STYLE_BG_COLOR,
         self::STYLE_POSITION,
-        self::STYLE_COLOR
+        self::STYLE_COLOR,
+        self::STYLE_FONT,
+        self::STYLE_FONT_BOLD
     ];
 
 
@@ -176,7 +179,7 @@ class Style
         $this->_element = $element;
         $this->_rootDirectory = $filesystem->getDirectoryRead(DirectoryList::ROOT);
         $this->parseSource();
-        $this->inheritFromParent();
+        //$this->inheritFromParent();
     }
 
 
@@ -214,7 +217,7 @@ class Style
     /**
      * Inherites defined values from the parent element's style
      */
-    protected function inheritFromParent(){
+    public function inheritFromParent(){
 
         if($this->_element->hasParent()) {
             $parentStyle = $this->_element->getParent()->getStyle();
@@ -360,6 +363,13 @@ class Style
                         $styleValue = null;
                     }
                     break;
+                case self::STYLE_FONT:
+                case self::STYLE_FONT_BOLD:
+                    $file_parts = pathinfo($styleValue);
+                    if(\strtolower($file_parts['extension']) === 'ttf' && false === \strpos($styleValue, '/')){
+                        $styleValue = Config::USER_FONTS_PATH  . '/' . $styleValue;
+                    }
+                    break;
 
             }
 
@@ -402,6 +412,8 @@ class Style
                     $path = $this->_rootDirectory->getAbsolutePath($fontName);
                     $this->_fontResources[$fontName] = \Zend_Pdf_Font::fontWithPath($path);
                 } catch (\Zend_Pdf_Exception $ex) {
+                    //
+                } catch ( \Exception $e){
                     //
                 }
             }

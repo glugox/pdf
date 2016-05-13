@@ -34,7 +34,7 @@
                     <container order="2" name="title-container" style="margin:10 0 20 0;">
                         <block name="pdf-title" order="1" src="config:getPdfTitle"
                                renderer="Glugox\PDF\Model\Renderer\Block\MultilineText"
-                               style="color:#333333; font-size:32; background-color:#ff0000; margin:0 0 15 0">
+                               style="color:#333333; font-size:32; background-color:#ff0000; margin:0 0 20 0">
                         </block>
                         <block name="pdf-description" order="2" src="config:getPdfDescription"
                                renderer="Glugox\PDF\Model\Renderer\Block\MultilineText"
@@ -45,17 +45,17 @@
                         <container order="1"
                                name="repeater-item"
                                renderer="Glugox\PDF\Model\Renderer\Container\Product\Item"
-                               style="width:126;  float:left; margin:0 7 40 0; font-size:12; color:#999999; display:block; background-color:#ff0000;">
-                            <block order="1" renderer="Glugox\PDF\Model\Renderer\Block\Product\Media" name="media" style="width:126;"></block>
+                               style="float:left; margin:0 7 40 0; font-size:12; color:#999999; display:block; background-color:#ff0000;">
+                            <block order="1" renderer="Glugox\PDF\Model\Renderer\Block\Product\Media" name="media" style=""></block>
                             <block order="2"
                                    name="title"
                                    renderer="Glugox\PDF\Model\Renderer\Block\Product\Title"
-                                   style="width:126; font-size:14; color:#333333; font-weight:normal; line-spacing:7; margin:10 0 0 0; padding:0 5; background-color:#00ff00;">
+                                   style="font-size:14; color:#333333; font-weight:normal; line-spacing:7; margin:10 0 0 0; padding:0 5; background-color:#00ff00;">
                             </block>
                             <block order="3"
                                    name="price"
                                    renderer="Glugox\PDF\Model\Renderer\Block\Product\Price"
-                                   style="width:126; font-size:14; color:#020202; font-weight:bold; display:block; margin:10 0 0 0; padding:0 5; background-color:#f7f7f7;">
+                                   style="font-size:14; color:#020202; font-weight:bold; display:block; margin:10 0 0 0; padding:0 5; background-color:#f7f7f7;">
                             </block>
                         </container>
                     </container>

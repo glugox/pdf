@@ -55,8 +55,10 @@ class Media extends AbstractRenderer
         /**
          * Define maximums
          */
-        $maxWidth = $helper->getConfigObject()->getSingleImageMaxWidth();
-        $maxHeight = $helper->getConfigObject()->getSingleImageMaxHeight();
+        //$maxWidth = $helper->getConfigObject()->getSingleImageMaxWidth();
+        //$maxHeight = $helper->getConfigObject()->getSingleImageMaxHeight();
+        $maxWidth = $style->get(Style::STYLE_WIDTH);
+        $maxHeight = $style->get(Style::STYLE_HEIGHT);
 
         if($style->get(Style::STYLE_WIDTH) && $bBox->getInnerWidth()){
             $maxWidth = $maxWidth ? \min($maxWidth, $bBox->getInnerWidth()) : $bBox->getInnerWidth();
@@ -80,8 +82,11 @@ class Media extends AbstractRenderer
             $imageHeight = $maxHeight;
             $imageWidth = $sizeFactor * $imageHeight;
         } else {
-            $imageHeight = 320;
-            $imageWidth = $sizeFactor * $imageHeight;
+
+            $bBox->setWidth(0)->setHeight(0);
+            return false;
+            /*$imageHeight = 320;
+            $imageWidth = $sizeFactor * $imageHeight;  */
         }
 
         /**

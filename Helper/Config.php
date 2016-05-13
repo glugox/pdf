@@ -19,50 +19,8 @@ use Magento\Framework\App\Filesystem\DirectoryList;
  */
 class Config extends AbstractHelper {
 
-    /**
-     * The most light gray color
-     *
-     * @var string Color gray 1
-     */
-    const COLOR_LINES = 'color_lines';
-
-    /**
-     * @var string Color categories
-     */
-    const COLOR_CATEGORIES = 'color_categories';
-
-    /**
-     * @var string Color sku
-     */
-    const COLOR_SKU = 'color_sku';
-
-    /**
-     * @var string Color store name
-     */
-    const COLOR_STORE_NAME = 'color_store_name';
-
-    /**
-     * @var string Color price
-     */
-    const COLOR_PRICE = 'color_price';
-
-    /**
-     * @var string Color price
-     */
-    const COLOR_PRICE_OLD = 'color_price_old';
-
-    /**
-     * @var string Color title
-     */
-    const COLOR_TITLE = 'color_title';
-
-    /**
-     * @var string Color text
-     */
-    const COLOR_TEXT = 'color_text';
-
-
-
+    
+    
     /**
      * @var \Magento\Config\Model\ResourceModel\Config
      */
@@ -141,16 +99,6 @@ class Config extends AbstractHelper {
     }
 
 
-    /**
-     * @return string
-     */
-    public function getDownloadUrl() {
-        if (!$this->_downloadUrl) {
-            $this->_downloadUrl = $this->getBackendtUrl("*/download");
-        }
-        return $this->_monitorUrl;
-    }
-
 
     /**
      * Get config for this module.
@@ -210,15 +158,6 @@ class Config extends AbstractHelper {
         return $this->_frontendUrl->getUrl($route, $params);
     }
 
-
-
-
-    /**
-     * @return \string
-     */
-    public function getStorageRelativePath() {
-        return "pub/static/frontend/en_US/Glugox_PDF/pdf";
-    }
 
 
     /**
@@ -414,46 +353,6 @@ class Config extends AbstractHelper {
         return (int)$this->getConfig('typography/list_title_size');
     }
 
-
-    /**
-     *
-     * @return \string
-     */
-    public function getPdfFontRegular() {
-
-        $font = 'lib/internal/LinLibertineFont/LinLibertine_Re-4.4.1.ttf';
-        $configFont = $this->getConfig("typography/font_regular");
-        if(!empty($configFont)){
-            $font = "pub/media/fonts/default/" . $configFont;
-        }
-        $path = $this->_rootDirectory->getAbsolutePath($font);
-        return $path;
-    }
-
-
-    /**
-     *
-     * @return \string
-     */
-    public function getPdfFontBold() {
-
-        $font = 'lib/internal/LinLibertineFont/LinLibertine_Bd-2.8.1.ttf';
-        $configFont = $this->getConfig("typography/font_bold");
-        if(!empty($configFont)){
-            $font = "pub/media/fonts/default/" . $configFont;
-        }
-        $path = $this->_rootDirectory->getAbsolutePath($font);
-        return $path;
-    }
-
-
-    /**
-     *
-     * @return \string
-     */
-    public function getPdfFontItalic() {
-        return 'lib/internal/LinLibertineFont/LinLibertine_It-2.8.2.ttf';
-    }
 
 
     /**

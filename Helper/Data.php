@@ -296,7 +296,7 @@ class Data extends AbstractHelper {
         if (!$currentCategory) {
             $this->_registry->register('current_category', $category);
         } elseif ($currentCategory && $currentCategory->getId() !== $category->getId()) {
-            throw new \Glugox\PFD\Exception\PDFException(__("Trying to change current category in registry!"));
+            throw new \Glugox\PDF\Exception\PDFException(__("Trying to change current category in registry!"));
         }
 
         return $this;
@@ -406,22 +406,6 @@ class Data extends AbstractHelper {
      */
     public function getProductImage(\Magento\Catalog\Model\Product $product) {
         return $this->_mediaDirectory->getAbsolutePath($this->_catalogProductMediaConfig->getBaseMediaPath() . $product->getImage());
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getDownloadUrl() {
-        return $this->getConfigObject()->getDownloadUrl();
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getStoragePath($fileName = NULL) {
-        return $this->_rootDirectory->getAbsolutePath($this->getConfigObject()->getStorageRelativePath() . (!$fileName ? '' : '/' . $fileName));
     }
 
 

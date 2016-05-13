@@ -32,7 +32,7 @@ class RootRenderer extends \Glugox\PDF\Model\Renderer\Container\AbstractRenderer
         parent::initialize();
         
         $this->_pdf = new \Zend_Pdf;
-        $this->getConfig()->newPage();
+
 
 
 
@@ -45,8 +45,13 @@ class RootRenderer extends \Glugox\PDF\Model\Renderer\Container\AbstractRenderer
     public function boot()
     {
         $this->getConfig()->processConfigStyling();
+        $this->inheritStyling();
+        $this->getConfig()->newPage();
         parent::boot();
     }
+
+
+    
 
 
     /**

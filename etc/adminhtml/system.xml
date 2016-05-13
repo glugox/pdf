@@ -68,6 +68,14 @@
                     <label>Display Sku</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="display_title_in_single_mode" translate="label" type="select" sortOrder="56" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display title in single mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="display_title_in_list_mode" translate="label" type="select" sortOrder="56" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display title in list mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
                 <field id="list_title_max_lines" translate="label" type="text" sortOrder="57" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Title max lines in list mode</label>
                     <comment>If title is truncated, '...' is appended. 0/[empty] for unlimited.</comment>
