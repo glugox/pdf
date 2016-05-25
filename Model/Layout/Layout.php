@@ -43,6 +43,7 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
 
     const DEFAULT_ATTRIBUTES = [self::ATTRIBUTE_KEY_NAME, self::ATTRIBUTE_KEY_RENDERER, self::ATTRIBUTE_KEY_ORDER, self::ATTRIBUTE_KEY_STYLE, self::ATTRIBUTE_KEY_SRC];
 
+    const PERCENT_OCCUPY = 10;
 
     /**
      * @var \Magento\Framework\Filesystem\File\ReadFactory
@@ -204,8 +205,10 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
         return $this;
     }
 
+
     /**
-     *
+     * @return \SimpleXMLElement
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function _loadFileLayoutUpdatesXml(){
 
@@ -231,15 +234,18 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
         if(!\count($updateFiles)){
             $this->_config->getHelper()->info("Warning! No layout xml files loaded!");
         }
-        foreach ($updateFiles as $file) {
+        if($updateFiles){
+            foreach ($updateFiles as $file) {
 
-            $fileReader = $this->_readFactory->create($file->getFilename(), DriverPool::FILE);
-            $fileStr = $fileReader->readAll($file->getName());
-            $layoutXml = $this->_loadXmlString($fileStr);
+                $fileReader = $this->_readFactory->create($file->getFilename(), DriverPool::FILE);
+                $fileStr = $fileReader->readAll($file->getName());
+                $layoutXml = $this->_loadXmlString($fileStr);
 
-            $fileStr = '<layout>' . $layoutXml->innerXml() . '</layout>';
-            $layoutStr .= $fileStr;
+                $fileStr = '<layout>' . $layoutXml->innerXml() . '</layout>';
+                $layoutStr .= $fileStr;
+            }
         }
+
 
         $layoutStr = '<layouts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' . $layoutStr . '</layouts>';
         $layoutXml = $this->_loadXmlString($layoutStr);
@@ -268,7 +274,7 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
     public function readElement( \Glugox\PDF\Model\Layout\Element $element ){
 
         $nodeName = $element->getName();
-        $this->_config->getHelper()->info("Reading element '{$nodeName}'...");
+        //$this->_config->getHelper()->info("Reading element '{$nodeName}'...");
 
         // make sure we read only supported types
         if( \in_array($nodeName, self::SUPPORTED_TYPES) ){
@@ -423,7 +429,7 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
             throw new PDFException(__("Element schelduled for generation does not have type!"));
         }
 
-        $this->_config->getHelper()->info("Generating element '{$name}' [{$type}]...");
+        //$this->_config->getHelper()->info("Generating element '{$name}' [{$type}]...");
 
         // check /set generated flag
         if( $this->_scheduledStructure->isElementGenerated($name) ){

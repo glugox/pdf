@@ -47,7 +47,7 @@ class Cache
      */
     public function __construct(\Magento\Framework\Filesystem $filesystem, \Magento\Framework\App\Response\Http\FileFactory $fileFactory, \Glugox\PDF\Model\Page\Config $config)
     {
-        $this->_rootDirectory = $filesystem->getDirectoryRead(DirectoryList::ROOT);
+        $this->_rootDirectory = $filesystem->getDirectoryWrite(DirectoryList::ROOT);
         $this->_fileFactory = $fileFactory;
         $this->_config = $config;
     }
@@ -66,8 +66,8 @@ class Cache
      * @param $filename
      * @return bool
      */
-    public function has( $filename ){
-        if($this->getConfig()->getData(Config::CACHE_ENABLED)){
+    public function has( $filename, $force=false ){
+        if($force || $this->getConfig()->getData(Config::CACHE_ENABLED)){
             return $this->_rootDirectory->isFile($filename);
         }
         return false;
@@ -85,11 +85,20 @@ class Cache
 
     /**
      * @param $filename
+     * @param $content
+     */
+    public function save( $fileName, $content ){
+        $this->_rootDirectory->writeFile($fileName, $content);
+    }
+
+
+    /**
+     * @param $filename
      * @return bool
      */
     public function delete( $filename ){
 
-        if($this->has($filename)){
+        if($this->has($filename, true)){
             $fullPath = $this->get($filename);
             if($fullPath){
                 return \unlink($fullPath);

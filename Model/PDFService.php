@@ -30,6 +30,12 @@ use Symfony\Component\Console\Input\InputOption;
 class PDFService implements PDFServiceInterface {
 
 
+    /**
+     * Code for using in global processes scope
+     */
+    const PROCESS_CODE = 'glugox-pdf-generate';
+
+
     /** @var \Magento\Framework\ObjectManagerInterface */
     protected $_objectManager;
 
@@ -65,6 +71,12 @@ class PDFService implements PDFServiceInterface {
      */
     protected $categoryRepository;
 
+
+    /**
+     * @var \Glugox\Process\Api\ProcessServiceInterface
+     */
+    protected $_processService;
+
     /**
      *
      * @param PDFFactory $pdfFactory
@@ -76,7 +88,8 @@ class PDFService implements PDFServiceInterface {
             \Glugox\PDF\Helper\Data $helper,
             \Glugox\PDF\Model\Provider\PDF\ProviderInterface $pdfProvider,
             \Glugox\PDF\Model\Cache $cache,
-            \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository
+            \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository,
+            \Glugox\Process\Api\ProcessServiceInterface $processService
     ) {
         $this->_context = $context;
         $this->_pdfFactory = $pdfFactory;
@@ -85,6 +98,7 @@ class PDFService implements PDFServiceInterface {
         $this->_cache = $cache;
         $this->_pageConfig = $context->getPageConfig();
         $this->categoryRepository = $categoryRepository;
+        $this->_processService = $processService;
 
     }
 
@@ -140,13 +154,20 @@ class PDFService implements PDFServiceInterface {
      * @param string $input Command input
      * @return array
      */
-    public function serve($strInput = "", InputDefinition $definition = null) {
+    public function serve($strInput = "", InputDefinition $definition = null, $processInstanceCode = null) {
 
         if(!$definition){
             $definition = $this->getCreateCommandDefinition();
         }
         $pdfResult = $this->_helper->createPdfResult();
         $this->_input = new StringInput($strInput, $definition);
+        $processInstanceData = ["name" => "Creating pdf for input: " . $strInput];
+        if(!empty($processInstanceCode)){
+            $processInstanceData['process_instance_code'] = $processInstanceCode;
+        }
+        $processInstance = $this->_processService->getProcess(self::PROCESS_CODE, $processInstanceData, true);
+        $this->getConfig()->setProcessInstance($processInstance);
+        $pdfResult->setProcessInstance($processInstance);
         return $this->_serve($pdfResult);
     }
 

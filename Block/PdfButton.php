@@ -21,6 +21,13 @@ class PdfButton extends PdfBlock
     protected $_helper;
 
 
+    /**
+     * PdfButton constructor.
+     * @param \Magento\Framework\Registry $registry
+     * @param \Magento\Framework\View\Element\Template\Context $context
+     * @param \Glugox\PDF\Helper\Data $helper
+     * @param array $data
+     */
     public function __construct(
             \Magento\Framework\Registry $registry,
             \Magento\Framework\View\Element\Template\Context $context,

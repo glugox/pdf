@@ -38,12 +38,18 @@ class AbstractRenderer extends Element implements RendererInterface
 
 
     /**
+     * @var int Number of rendered children of the container.
+     */
+    //protected $_numRenderedChildren;
+
+    /**
      * Initializes data needed for rendering
      * of this element.
      */
     public function initialize( \Glugox\PDF\Model\Page\Config $config = null ){
-        
-        
+
+        //$this->getConfig()->log("Container '{$this->getName()}' initialize()");
+        //$this->_numRenderedChildren = 0;
         parent::initialize($config);
         if($this->hasChildren()){
             foreach ($this->getChildren() as $child) {
@@ -84,6 +90,9 @@ class AbstractRenderer extends Element implements RendererInterface
      * is changed (like rendered new element)
      */
     public function updateLayout(){
+
+
+        //$this->getConfig()->log("Container '{$this->getName()}' updateLayout()");
 
         // check if it rendered, no need for layout info
         //  for rendered container.
@@ -266,7 +275,7 @@ class AbstractRenderer extends Element implements RendererInterface
     public function handleNewPage(){
 
         parent::handleNewPage();
-        $this->removeRenderedChildren();
+        //$this->removeRenderedChildren();
         if($this->hasChildren()){
 
             /** @var \Glugox\PDF\Model\Renderer\Element $child */
@@ -319,9 +328,12 @@ class AbstractRenderer extends Element implements RendererInterface
      */
     public function render()
     {
+
+
         $parentRenderResult = parent::render();
         // mark not rendered yet, in parent::render was set to true
         $this->setIsRendered(false);
+        $this->setIsRendering(true);
 
         if(Element::NEW_PAGE_FLAG === $parentRenderResult){
             return $parentRenderResult;
@@ -349,22 +361,33 @@ class AbstractRenderer extends Element implements RendererInterface
                             $this->_highestRenderedItem = $child;
                         }
                     }
-
+                    $childName = $child->getName();
                     if(Element::NEW_PAGE_FLAG === $rendered){
+                        $this->_currentRenderingItem = null;
                         return $rendered;
-
                     }
+                    //++$this->_numRenderedChildren;
                 }
 
             }
+            $this->_currentRenderingItem = null;
+
         }
         $this->setIsRendered(true);
+        $this->setIsRendering(false);
+        /*if($this->getParent()){
+            $this->getParent()->setCurrentRenderedItem(null);
+        }*/
 
         if(!$this->getStyle()->get(Style::STYLE_HEIGHT)){
             $height = $maxY - $minY;
             $this->getBoundingBox()->setHeight($height);
         }
-        
+
+
+        //$this->getConfig()->log("Rendered : " . $this->getName());
+        $this->getConfig()->handleContainerRendered($this);
+
         return $this->getPdf();
     }
 
@@ -382,6 +405,13 @@ class AbstractRenderer extends Element implements RendererInterface
      */
     public function getCurrentRenderedItem(){
         return $this->_currentRenderingItem;
+    }
+
+    /**
+     * @return \Glugox\PDF\Model\Renderer\RendererInterface
+     */
+    public function setCurrentRenderedItem(\Glugox\PDF\Model\Renderer\RendererInterface $item=null){
+        $this->_currentRenderingItem = $item;
     }
 
     /**
@@ -453,7 +483,15 @@ class AbstractRenderer extends Element implements RendererInterface
      * @return boolean
      */
     public function hasChildren(){
-        return !empty($this->_children);
+        return !empty($this->_children) && \count($this->_children) > 0;
+    }
+
+
+    /**
+     * @return int
+     */
+    public function getNumChildren(){
+        return \count($this->_children);
     }
 
 
@@ -485,6 +523,66 @@ class AbstractRenderer extends Element implements RendererInterface
             }
         }
     }
+
+    /**
+     * @return int
+     */
+    public function getNumRenderedChildren(){
+        $num = 0;
+        if($this->hasChildren()){
+            /** @var \Glugox\PDF\Model\Renderer\RendererInterface $child */
+            foreach ($this->_children as $child) {
+                if(  $child->getIsRendered() ){
+                    ++$num;
+                }
+            }
+        }
+        return $num;
+    }
+
+    /**
+     * @return int
+     */
+    public function getProgress()
+    {
+        $progress = 0;
+        $dbg = ['name' => $this->getName(), 'numRenderedChildren' => 0, 'numChildren' => 0, 'currRenderedItem' => null];
+        if($this->hasChildren()){
+            $dbg['numRenderedChildren'] = $this->getNumRenderedChildren();
+            $dbg['numChildren'] = $this->getNumChildren();
+            $dbg['childrenNames'] = [];
+            foreach ($this->getChildren() as $child) {
+                $dbg['childrenNames'][] = $child->getName();
+            }
+            $progress = $this->getNumRenderedChildren() / $this->getNumChildren() * 100;
+            //if($progress > 100){
+                //$this->getConfig()->log( "Container: " . $this->getName() . ", progress: " . $progress . " ({$this->getNumRenderedChildren()}/{$this->getNumChildren()})" );
+            //}
+
+            if($this->getCurrentRenderedItem() && !$this->getCurrentRenderedItem()->getIsRendered() && $progress < 100){
+
+
+                $childProgress = $this->getCurrentRenderedItem()->getProgress();
+                $dbg['currRenderedItem'] = ['name' => $this->getCurrentRenderedItem()->getName(), 'progress' => $childProgress];
+
+                $numChildren = $this->getNumChildren();
+                $dProgress = 1/$numChildren * $childProgress['value'];
+                $dbg['dProgress'] = $dProgress;
+                $progress += $dProgress;
+
+            }
+        }else{
+            $progress = parent::getProgress();
+
+        }
+
+
+        return ['value'=>$progress, 'dbg' => $dbg];
+    }
+
+
+
+
 
     /**
      * When an object is cloned, PHP 5 will perform a shallow copy of all of the object's properties.

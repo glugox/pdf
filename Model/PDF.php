@@ -83,9 +83,9 @@ class PDF extends \Magento\Framework\Model\AbstractModel {
      * @param \Glugox\PDF\Api\PDFServiceInterface $pdfService
      * @return \Glugox\PDF\Model\PDFResult
      */
-    public function createPdf(\Glugox\PDF\Api\PDFServiceInterface $pdfService){
+    public function createPdf(\Glugox\PDF\Api\PDFServiceInterface $pdfService, $processInstanceCode=null){
         $commandString = $this->getSourceDefinition();
-        return $pdfService->serve($commandString);
+        return $pdfService->serve($commandString, null, $processInstanceCode);
     }
 
 

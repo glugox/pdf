@@ -15,6 +15,9 @@ use Glugox\PDF\Exception\PDFException;
 
 class RootRenderer extends \Glugox\PDF\Model\Renderer\Container\AbstractRenderer implements RendererInterface
 {
+
+    const PERCENT_OCCUPY = 90;
+
     /**
      * Initializes the zend pdf instance and
      * prepares it for rendering.

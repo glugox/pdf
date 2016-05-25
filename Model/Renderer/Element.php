@@ -16,6 +16,7 @@ use Glugox\PDF\Model\Layout\Layout;
 use Glugox\PDF\Model\Renderer\Data\Style;
 use Glugox\PDF\Model\Page\Config;
 
+
 abstract class Element implements RendererInterface
 {
 
@@ -115,12 +116,22 @@ abstract class Element implements RendererInterface
 
 
     /**
+     * @var bool
+     */
+    protected $_isRendering = false;
+
+
+    /**
      * @var int
+     * 
+     * TODO: remove, using bounding box.
      */
     protected $_currX = 0;
 
     /**
      * @var int
+     * 
+     * TODO: remove, using bounding box.
      */
     protected $_currY = 0;
 
@@ -434,7 +445,28 @@ abstract class Element implements RendererInterface
     }
 
     /**
+     * @return boolean
+     */
+    public function isIsRendering()
+    {
+        return $this->_isRendering;
+    }
+
+    /**
+     * @param boolean $isRendering
+     */
+    public function setIsRendering($isRendering)
+    {
+        $this->_isRendering = $isRendering;
+    }
+
+
+
+
+    /**
      * @return int
+     * 
+     * TODO: remove, using bounding box.
      */
     public function getCurrX()
     {
@@ -443,6 +475,8 @@ abstract class Element implements RendererInterface
 
     /**
      * @param int $currX
+     * 
+     * TODO: remove, using bounding box.
      */
     public function setCurrX($currX)
     {
@@ -451,6 +485,8 @@ abstract class Element implements RendererInterface
 
     /**
      * @return int
+     * 
+     * TODO: remove, using bounding box.
      */
     public function getCurrY()
     {
@@ -459,6 +495,8 @@ abstract class Element implements RendererInterface
 
     /**
      * @param int $currY
+     * 
+     * TODO: remove, using bounding box.
      */
     public function setCurrY($currY)
     {
@@ -498,7 +536,8 @@ abstract class Element implements RendererInterface
     public function render()
     {
 
-        $name = $this->getName();
+        //$this->getConfig()->log("Element '{$this->getName()}' render()");
+
         $this->handleRenderStart();
         $bBox = $this->getBoundingBox();
 
@@ -530,7 +569,6 @@ abstract class Element implements RendererInterface
 
         }
 
-
         // rendering end
         // set this is rendered
         $this->handleRenderEnd();
@@ -561,11 +599,14 @@ abstract class Element implements RendererInterface
     {
 
         $config = $this->getConfig();
+        $name = $this->_name;
+
         if (!$config) {
             throw new PDFException(__("Element '{$this->_name}'' trying to render, but no config found!"));
         }
 
         // rendering start
+        $this->_isRendering = true;
         $config->dispachEvent(Config::EVENT_ELEMENT_RENDER_START, ["element" => $this]);
         $pdf = $this->getPdf();
         if (!$pdf) {
@@ -583,9 +624,19 @@ abstract class Element implements RendererInterface
 
         $config = $this->getConfig();
         $this->setIsRendered(true);
+        $this->_isRendering = false;
         $config->dispachEvent(Config::EVENT_ELEMENT_RENDER_END, ["element" => $this]);
 
         return $this;
+    }
+
+
+    /**
+     * @return int
+     */
+    public function getProgress()
+    {
+        return $this->getIsRendered() ? 100 : 0;
     }
 
 

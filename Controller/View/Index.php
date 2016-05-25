@@ -28,9 +28,8 @@ class Index extends \Glugox\PDF\Controller\FrontController {
         $pdfId = (int)$this->getRequest()->getParam('id');
         if($pdfId){
             $pdfModel = $this->_service->get($pdfId);
-            $file = $pdfModel->getPdfFile();
-            if($file){
-                return $this->_fileFactory->create($pdfModel->getName() , ["type" => "filename", "value" => $file], DirectoryList::ROOT, 'application/pdf');
+            if($pdfModel->getPdfFile() && $this->_cache->has($pdfModel->getPdfFile())){
+                return $this->_cache->getResult($pdfModel->getName(), $pdfModel->getPdfFile());
             }
         }
         return $this->getResponse()->setRedirect($this->_redirect->getRedirectUrl());

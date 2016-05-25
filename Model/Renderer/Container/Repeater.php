@@ -143,12 +143,23 @@ class Repeater extends \Glugox\PDF\Model\Renderer\Container\AbstractRenderer
      */
     public function render()
     {
+        
         if($this->hasChildren()) {
             foreach ($this->getChildren() as $child) {
                 $child->setParent($this);
             }
         }
         return parent::render();
+    }
+
+
+    /**
+     * @return int
+     */
+    public function getProgress()
+    {
+        $progress = parent::getProgress();
+        return $progress;
     }
 
 

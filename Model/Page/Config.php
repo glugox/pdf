@@ -17,6 +17,7 @@ use Glugox\PDF\Model\Renderer\Element;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\TestFramework\Inspection\Exception;
+use \Psr\Log\LoggerInterface;
 
 
 class Config extends \Magento\Framework\DataObject
@@ -169,6 +170,12 @@ class Config extends \Magento\Framework\DataObject
 
 
     /**
+     * @var \Glugox\Process\Model\Instance
+     */
+    protected $_processInstance;
+
+
+    /**
      * If we are rendering only one product -> product,
      * If we are rendering multiple products -> list
      *
@@ -211,6 +218,12 @@ class Config extends \Magento\Framework\DataObject
 
 
     /**
+     * @var \Glugox\Process\Helper\Data
+     */
+    protected $_processHelper;
+
+
+    /**
      * @var \Magento\Catalog\Model\Product
      */
     protected $_product = null;
@@ -233,6 +246,17 @@ class Config extends \Magento\Framework\DataObject
      */
     protected $_pdfDescription;
 
+
+    /**
+     * @var int
+     */
+    protected $_progress;
+
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $_logger;
+
     /**
      * Config constructor.
      * @param \Glugox\PDF\Model\Layout\LayoutInterface $layout
@@ -244,7 +268,9 @@ class Config extends \Magento\Framework\DataObject
         \Glugox\PDF\Model\Renderer\Data\BoundingBoxFactory $boundingBoxFactory,
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \Magento\Framework\ObjectManagerInterface $objectManager,
-        \Glugox\PDF\Helper\Data $helper
+        \Glugox\PDF\Helper\Data $helper,
+        \Glugox\Process\Helper\Data $processHelper,
+        \Psr\Log\LoggerInterface $logger
     )
     {
         $this->layout = $layout;
@@ -253,6 +279,8 @@ class Config extends \Magento\Framework\DataObject
         $this->_eventManager = $eventManager;
         $this->_objectManeger = $objectManager;
         $this->_helper = $helper;
+        $this->_logger = $logger;
+        $this->_processHelper = $processHelper;
 
         $this->layout->setConfig($this);
         $this->load();
@@ -269,11 +297,16 @@ class Config extends \Magento\Framework\DataObject
         if (!$this->_isLoaded) {
             $this->_isLoaded = true;
 
+            //$this->log("Config :: load()");
+
             $data = $this->_configLoader->getConfigByPath(\trim(self::PREFIX_MODULE, '/'), 'default', 0, true);
-            foreach ($data as $cfgKey => $item) {
-                $cfgKey = \str_replace(self::PREFIX_MODULE, '', $cfgKey);
-                $this->setData($cfgKey, $item["value"]);
+            if(\is_array($data)){
+                foreach ($data as $cfgKey => $item) {
+                    $cfgKey = \str_replace(self::PREFIX_MODULE, '', $cfgKey);
+                    $this->setData($cfgKey, $item["value"]);
+                }
             }
+
         }
         return $this;
 
@@ -287,6 +320,8 @@ class Config extends \Magento\Framework\DataObject
      */
     public function render()
     {
+
+        //$this->log("Config :: render()");
 
         $rootRenderer = $this->getLayout()->getRootRenderer();
         $rootRenderer->initialize($this);
@@ -365,6 +400,8 @@ class Config extends \Magento\Framework\DataObject
     public function processConfigStyling()
     {
 
+
+        //$this->log("Config :: processConfigStyling()");
 
         $rootRenderer = $this->getLayout()->getRootRenderer();
         $pCont = "wrapper/product-page/product-container";
@@ -467,6 +504,20 @@ class Config extends \Magento\Framework\DataObject
 
 
     /**
+     * Handles end of rendering conatainer
+     */
+    public function handleContainerRendered($container){
+        $progress = $this->getProgress();
+        //$this->log("Config::handleContainerRendered({$container->getName()}), progress = " . \print_r($progress,true));
+        if($this->getProcessInstance()){
+            $this->_processHelper->updateProcess($this->getProcessInstance(), ['progress' => $progress['value']]);
+        }
+    }
+
+
+
+
+    /**
      * @return \Glugox\PDF\Helper\Data
      */
     public function getHelper()
@@ -563,6 +614,9 @@ class Config extends \Magento\Framework\DataObject
      */
     public function newPage(array $settings = [])
     {
+
+        $this->log("NEW PAGE");
+        
         $rootRenderer = $this->getLayout()->getRootRenderer();
         $pdf = $rootRenderer->getPdf();
 
@@ -585,13 +639,13 @@ class Config extends \Magento\Framework\DataObject
     {
 
         $this->newPage();
-        if (true) {
+        /*if (true) {
             $header = $this->getLayout()->getRootRenderer()->getChild("wrapper/product-page/header-wrapper");
             if ($header) { // first time is null
                 $header->setIsRendered(false, true);
             }
 
-        }
+        }*/
         return $this->getLayout()->getRootRenderer()->render();
     }
 
@@ -664,6 +718,22 @@ class Config extends \Magento\Framework\DataObject
         return $this->_pageSize;
     }
 
+
+    /**
+     * @return \Glugox\Process\Model\Instance
+     */
+    public function getProcessInstance()
+    {
+        return $this->_processInstance;
+    }
+
+    /**
+     * @param \Glugox\Process\Model\Instance
+     */
+    public function setProcessInstance($processInstance)
+    {
+        $this->_processInstance = $processInstance;
+    }
 
     /**
      * @param \Glugox\PDF\Model\Renderer\RendererInterface $element
@@ -848,6 +918,27 @@ class Config extends \Magento\Framework\DataObject
         }
         return $collection;
     }
+
+    /**
+     * @return int
+     */
+    public function getProgress()
+    {
+        return $this->getLayout()->getRootRenderer()->getProgress();
+    }
+
+
+    /**
+     * @param \string $message
+     * @return Config
+     */
+    public function log($message){
+        $this->_logger->info($message);
+        return $this;
+    }
+
+
+
 
 
 }

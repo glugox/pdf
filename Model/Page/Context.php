@@ -49,12 +49,6 @@ class Context
      */
     protected $_cache;
 
-    /**
-     * Session
-     *
-     * @var \Magento\Framework\Session\SessionManagerInterface
-     */
-    protected $_session;
 
     /**
      * SID Resolver
@@ -130,7 +124,6 @@ class Context
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
      * @param \Magento\Framework\UrlInterface $urlBuilder
      * @param \Magento\Framework\App\CacheInterface $cache
-     * @param \Magento\Framework\Session\SessionManagerInterface $session
      * @param \Magento\Framework\Session\SidResolverInterface $sidResolver
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\View\Asset\Repository $assetRepo
@@ -147,7 +140,6 @@ class Context
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \Magento\Framework\UrlInterface $urlBuilder,
         \Magento\Framework\App\CacheInterface $cache,
-        \Magento\Framework\Session\SessionManagerInterface $session,
         \Magento\Framework\Session\SidResolverInterface $sidResolver,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\View\Asset\Repository $assetRepo,
@@ -164,7 +156,6 @@ class Context
         $this->_eventManager = $eventManager;
         $this->_urlBuilder = $urlBuilder;
         $this->_cache = $cache;
-        $this->_session = $session;
         $this->_sidResolver = $sidResolver;
         $this->_scopeConfig = $scopeConfig;
         $this->_assetRepo = $assetRepo;
@@ -217,16 +208,6 @@ class Context
     public function getRequest()
     {
         return $this->_request;
-    }
-
-    /**
-     * Get session
-     *
-     * @return \Magento\Framework\Session\SessionManagerInterface
-     */
-    public function getSession()
-    {
-        return $this->_session;
     }
 
     /**

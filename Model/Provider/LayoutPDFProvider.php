@@ -44,6 +44,12 @@ class LayoutPDFProvider implements \Glugox\PDF\Model\Provider\PDF\ProviderInterf
      */
     protected $_helper;
 
+
+    /**
+     * @var \Glugox\Process\Helper\Data
+     */
+    protected $_processHelper;
+
     /**
      * LayoutPDFProvider constructor.
      * @param \Magento\Framework\ObjectManagerInterface $objectManager
@@ -56,7 +62,8 @@ class LayoutPDFProvider implements \Glugox\PDF\Model\Provider\PDF\ProviderInterf
         \Glugox\PDF\Helper\ProductPdf $productHelper,
         \Glugox\PDF\Helper\CollectionPdf $collectionHelper,
         \Glugox\PDF\Model\PDFResult $pdfResult,
-        \Glugox\PDF\Helper\Data $helper
+        \Glugox\PDF\Helper\Data $helper,
+        \Glugox\Process\Helper\Data $processHelper
     )
     {
         $this->_objectManager = $objectManager;
@@ -64,6 +71,7 @@ class LayoutPDFProvider implements \Glugox\PDF\Model\Provider\PDF\ProviderInterf
         $this->_collectionHelper = $collectionHelper;
         $this->_pdfResult = $pdfResult;
         $this->_helper = $helper;
+        $this->_processHelper = $processHelper;
     }
 
     /**
@@ -79,6 +87,13 @@ class LayoutPDFProvider implements \Glugox\PDF\Model\Provider\PDF\ProviderInterf
         ) {
 
         $this->_products = $products;
+
+        /**
+         * Mark the process instance started
+         */
+        if($pdfResult->getProcessInstance()){
+            $this->_processHelper->startProcess($pdfResult->getProcessInstance());
+        }
 
         // Page result to keep the pdf instance
         $page = $this->_objectManager->create("\Glugox\PDF\Model\Page\Result");
@@ -105,6 +120,14 @@ class LayoutPDFProvider implements \Glugox\PDF\Model\Provider\PDF\ProviderInterf
 
         
         $pdfResult->setPdf( $page->getPdf() );
+
+
+        /**
+         * Mark the process instance finished
+         */
+        if($pdfResult->getProcessInstance()){
+            $this->_processHelper->finishProcess($pdfResult->getProcessInstance(), $pdfResult->getError());
+        }
 
         return $pdfResult;
     }

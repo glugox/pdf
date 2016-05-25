@@ -66,7 +66,7 @@ class CreateCommand extends Command {
     /**
      * @var \Magento\Framework\Filesystem\Directory\Read
      */
-    protected $_varDirectory;
+    //protected $_varDirectory;
 
     /** @var \Glugox\PDF\Helper\Data */
     protected $_helper;
@@ -80,8 +80,10 @@ class CreateCommand extends Command {
             \Glugox\PDF\Model\PDFService $pdfService,
             \Magento\Framework\Filesystem $filesystem,
             \Glugox\PDF\Helper\Data $helper) {
+
         $this->_registry = $registry;
         $this->_pdfService = $pdfService;
+        $this->_pdfService->setAreaCode("frontend");
         $this->_varDirectory = $filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
         $this->_helper = $helper;
         parent::__construct();
@@ -114,14 +116,14 @@ class CreateCommand extends Command {
         // Register the console output to the global registry, so it can be used from other parts to display console info too.
         $this->_registry->register(self::CURRENT_CMD_OUTPUT_INTERFACE, $output);
 
-        $this->_pdfService->setAreaCode("frontend");
+
 
         /** @var \Glugox\PDF\Model\PDFResult * */
         $pdfResult = $this->_pdfService->serve((string) $input, $this->getDefinition());
         $pdf = $pdfResult->getPdf();
         $filename = $pdfResult->getFileneme();
 
-        $output->writeln('<info> Saving PDF to : ' . $filename . '  ...</info>');
+        //$output->writeln('<info> Saving PDF to : ' . $filename . '  ...</info>');
 
         $pdf->save($filename);
     }

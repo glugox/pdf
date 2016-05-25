@@ -32,6 +32,12 @@ class PDFResult extends \Magento\Framework\DataObject{
 
 
     /**
+     * @var \Glugox\Process\Model\Instance
+     */
+    protected $_processInstance;
+
+
+    /**
      * @var null
      */
     protected $_fileName = null;
@@ -97,7 +103,10 @@ class PDFResult extends \Magento\Framework\DataObject{
      */
     public function createFileName($source){
 
-        $customerId = (int) $this->_pdfHelper->getSession()->getCustomerId();
+        $customerId = 0;
+        if($this->_pdfHelper->getSession()){
+            $customerId = (int) $this->_pdfHelper->getSession()->getCustomerId();
+        }
         //$date = $this->_objectManager->get('Magento\Framework\Stdlib\DateTime\DateTime')->date('YmdHis');
         $this->_fileName = \md5($source . '_' . $customerId);
 
@@ -108,5 +117,24 @@ class PDFResult extends \Magento\Framework\DataObject{
 
         return $this->_fileName;
     }
+
+    /**
+     * @return \Glugox\Process\Model\Instance
+     */
+    public function getProcessInstance()
+    {
+        return $this->_processInstance;
+    }
+
+    /**
+     * @param \Glugox\Process\Model\Instance
+     */
+    public function setProcessInstance($processInstance)
+    {
+        $this->_processInstance = $processInstance;
+    }
+    
+    
+    
 
 }
