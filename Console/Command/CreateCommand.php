@@ -125,7 +125,10 @@ class CreateCommand extends Command {
 
         //$output->writeln('<info> Saving PDF to : ' . $filename . '  ...</info>');
 
-        $pdf->save($filename);
+        if($pdf){
+            $pdf->save($filename);
+        }
+
     }
 
 

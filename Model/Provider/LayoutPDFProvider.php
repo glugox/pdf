@@ -46,9 +46,9 @@ class LayoutPDFProvider implements \Glugox\PDF\Model\Provider\PDF\ProviderInterf
 
 
     /**
-     * @var \Glugox\Process\Helper\Data
+     * @var \Glugox\Core\Api\ProcessServiceInterface
      */
-    protected $_processHelper;
+    protected $_processService;
 
     /**
      * LayoutPDFProvider constructor.
@@ -63,7 +63,7 @@ class LayoutPDFProvider implements \Glugox\PDF\Model\Provider\PDF\ProviderInterf
         \Glugox\PDF\Helper\CollectionPdf $collectionHelper,
         \Glugox\PDF\Model\PDFResult $pdfResult,
         \Glugox\PDF\Helper\Data $helper,
-        \Glugox\Process\Helper\Data $processHelper
+        \Glugox\Core\Api\ProcessServiceInterface $processService = null
     )
     {
         $this->_objectManager = $objectManager;
@@ -71,7 +71,7 @@ class LayoutPDFProvider implements \Glugox\PDF\Model\Provider\PDF\ProviderInterf
         $this->_collectionHelper = $collectionHelper;
         $this->_pdfResult = $pdfResult;
         $this->_helper = $helper;
-        $this->_processHelper = $processHelper;
+        $this->_processService = $processService;
     }
 
     /**
@@ -91,8 +91,8 @@ class LayoutPDFProvider implements \Glugox\PDF\Model\Provider\PDF\ProviderInterf
         /**
          * Mark the process instance started
          */
-        if($pdfResult->getProcessInstance()){
-            $this->_processHelper->startProcess($pdfResult->getProcessInstance());
+        if($this->getProcessService() && $pdfResult->getProcessInstance()){
+            $this->getProcessService()->startProcess($pdfResult->getProcessInstance());
         }
 
         // Page result to keep the pdf instance
@@ -125,10 +125,18 @@ class LayoutPDFProvider implements \Glugox\PDF\Model\Provider\PDF\ProviderInterf
         /**
          * Mark the process instance finished
          */
-        if($pdfResult->getProcessInstance()){
-            $this->_processHelper->finishProcess($pdfResult->getProcessInstance(), $pdfResult->getError());
+        if($this->getProcessService() && $pdfResult->getProcessInstance()){
+            $this->getProcessService()->finishProcess($pdfResult->getProcessInstance(), $pdfResult->getError());
         }
 
         return $pdfResult;
+    }
+
+
+    /**
+     * @return \Glugox\Core\Api\ProcessServiceInterface
+     */
+    public function getProcessService(){
+        return $this->_processService;
     }
 }

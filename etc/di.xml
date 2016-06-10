@@ -12,6 +12,7 @@
     <preference for="Glugox\PDF\Model\Provider\Products\ProviderInterface" type="Glugox\PDF\Model\Provider\Layer\Products" />
     <preference for="Glugox\PDF\Api\PDFServiceInterface" type="Glugox\PDF\Model\PDFService" />
     <preference for="Glugox\PDF\Model\Layout\LayoutInterface" type="Glugox\PDF\Model\Layout\Layout" />
+    <preference for="Glugox\Core\Api\ProcessServiceInterface" type="Glugox\Process\Model\ProcessService" />
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">

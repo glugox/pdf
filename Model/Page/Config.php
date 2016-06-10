@@ -167,12 +167,7 @@ class Config extends \Magento\Framework\DataObject
      * @var string
      */
     protected $pageLayout;
-
-
-    /**
-     * @var \Glugox\Process\Model\Instance
-     */
-    protected $_processInstance;
+    
 
 
     /**
@@ -218,9 +213,15 @@ class Config extends \Magento\Framework\DataObject
 
 
     /**
-     * @var \Glugox\Process\Helper\Data
+     * @var \Glugox\Core\Api\ProcessServiceInterface
      */
-    protected $_processHelper;
+    protected $_processService;
+
+
+    /**
+     * @var mixed
+     */
+    protected $_processInstance;
 
 
     /**
@@ -269,8 +270,8 @@ class Config extends \Magento\Framework\DataObject
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Glugox\PDF\Helper\Data $helper,
-        \Glugox\Process\Helper\Data $processHelper,
-        \Psr\Log\LoggerInterface $logger
+        \Psr\Log\LoggerInterface $logger,
+        \Glugox\Core\Api\ProcessServiceInterface $processService
     )
     {
         $this->layout = $layout;
@@ -280,7 +281,7 @@ class Config extends \Magento\Framework\DataObject
         $this->_objectManeger = $objectManager;
         $this->_helper = $helper;
         $this->_logger = $logger;
-        $this->_processHelper = $processHelper;
+        $this->_processService = $processService;
 
         $this->layout->setConfig($this);
         $this->load();
@@ -509,8 +510,8 @@ class Config extends \Magento\Framework\DataObject
     public function handleContainerRendered($container){
         $progress = $this->getProgress();
         //$this->log("Config::handleContainerRendered({$container->getName()}), progress = " . \print_r($progress,true));
-        if($this->getProcessInstance()){
-            $this->_processHelper->updateProcess($this->getProcessInstance(), ['progress' => $progress['value']]);
+        if($this->getProcessService() && $this->getProcessInstance()){
+            $this->getProcessService()->updateProcess($this->getProcessInstance(), ['progress' => $progress['value']]);
         }
     }
 
@@ -720,12 +721,21 @@ class Config extends \Magento\Framework\DataObject
 
 
     /**
-     * @return \Glugox\Process\Model\Instance
+     * @return mixed
      */
     public function getProcessInstance()
     {
         return $this->_processInstance;
     }
+
+
+    /**
+     * @return \Glugox\Core\Api\ProcessServiceInterface
+     */
+    public function getProcessService(){
+        return $this->_processService;
+    }
+
 
     /**
      * @param \Glugox\Process\Model\Instance

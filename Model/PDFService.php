@@ -73,7 +73,7 @@ class PDFService implements PDFServiceInterface {
 
 
     /**
-     * @var \Glugox\Process\Api\ProcessServiceInterface
+     * @var \Glugox\Core\Api\ProcessServiceInterface
      */
     protected $_processService;
 
@@ -89,7 +89,7 @@ class PDFService implements PDFServiceInterface {
             \Glugox\PDF\Model\Provider\PDF\ProviderInterface $pdfProvider,
             \Glugox\PDF\Model\Cache $cache,
             \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository,
-            \Glugox\Process\Api\ProcessServiceInterface $processService
+            \Glugox\Core\Api\ProcessServiceInterface $processService
     ) {
         $this->_context = $context;
         $this->_pdfFactory = $pdfFactory;
@@ -165,9 +165,14 @@ class PDFService implements PDFServiceInterface {
         if(!empty($processInstanceCode)){
             $processInstanceData['process_instance_code'] = $processInstanceCode;
         }
-        $processInstance = $this->_processService->getProcess(self::PROCESS_CODE, $processInstanceData, true);
-        $this->getConfig()->setProcessInstance($processInstance);
-        $pdfResult->setProcessInstance($processInstance);
+
+        if($this->getProcessService()){
+            $processInstance = $this->getProcessService()->getProcess(self::PROCESS_CODE, $processInstanceData, true);
+            $this->getConfig()->setProcessInstance($processInstance);
+            $pdfResult->setProcessInstance($processInstance);
+        }
+
+
         return $this->_serve($pdfResult);
     }
 
@@ -483,6 +488,14 @@ class PDFService implements PDFServiceInterface {
      */
     public function createPdfResult(){
         return $this->_helper->createPdfResult();
+    }
+
+
+    /**
+     * @return \Glugox\Core\Api\ProcessServiceInterface
+     */
+    public function getProcessService(){
+        return $this->_processService;
     }
 
 }
