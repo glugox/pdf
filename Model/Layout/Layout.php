@@ -30,7 +30,7 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
     const TYPE_BLOCK = 'block';
     const KEY_ATTRIBUTES = 'attributes';
 
-    const SUPPORTED_TYPES = [ self::TYPE_CONTAINER, self::TYPE_BLOCK ];
+    public $supportedTypes;
 
     const ATTRIBUTE_KEY_NAME       = 'name';
     const ATTRIBUTE_KEY_RENDERER   = 'renderer';
@@ -137,6 +137,8 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
         $this->theme = $theme ?: $design->getDesignTheme();
         $this->_rootRenderer = $rootRenderer;
         $this->_rendererFactory = $rendererFactory;
+
+        $this->supportedTypes = [ self::TYPE_CONTAINER, self::TYPE_BLOCK ];
     }
 
 
@@ -277,7 +279,7 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
         //$this->_config->getHelper()->info("Reading element '{$nodeName}'...");
 
         // make sure we read only supported types
-        if( \in_array($nodeName, self::SUPPORTED_TYPES) ){
+        if( \in_array($nodeName, $this->supportedTypes) ){
 
             // read element's default data: name, parent, etc
             $data = $this->readElementDefaults( $element, $element->getParent() );
