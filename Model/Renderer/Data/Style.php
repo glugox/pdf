@@ -365,10 +365,16 @@ class Style
                     break;
                 case self::STYLE_FONT:
                 case self::STYLE_FONT_BOLD:
-                    $file_parts = pathinfo($styleValue);
-                    if(\strtolower($file_parts['extension']) === 'ttf' && false === \strpos($styleValue, '/')){
-                        $styleValue = Config::USER_FONTS_PATH  . '/' . $styleValue;
+                    if($styleValue){
+                        $file_parts = pathinfo($styleValue);
+                        if(isset($file_parts['extension'])){
+                            if(\strtolower($file_parts['extension']) === 'ttf' && false === \strpos($styleValue, '/')){
+                                $styleValue = Config::USER_FONTS_PATH  . '/' . $styleValue;
+                            }
+                        }
+
                     }
+
                     break;
 
             }
