@@ -37,11 +37,11 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
     const ATTRIBUTE_KEY_ORDER      = 'order';
     const ATTRIBUTE_KEY_STYLE      = 'style';
     const ATTRIBUTE_KEY_SRC        = 'src';
-    const ATTRIBUTE_KEY_PARENT     = 'parent'; // parent can not be set in xml (not in self::DEFAULT_ATTRIBUTES), but it is processed by reading parent node.
-    const ATTRIBUTE_KEY_TYPE       = 'type'; // type can not be set in xml attributed, it is xml node name, (not in self::DEFAULT_ATTRIBUTES), but it is processed by reading parent node.
+    const ATTRIBUTE_KEY_PARENT     = 'parent'; // parent can not be set in xml (not in $this->defaultAttributes), but it is processed by reading parent node.
+    const ATTRIBUTE_KEY_TYPE       = 'type'; // type can not be set in xml attributed, it is xml node name, (not in $this->defaultAttributes), but it is processed by reading parent node.
 
 
-    const DEFAULT_ATTRIBUTES = [self::ATTRIBUTE_KEY_NAME, self::ATTRIBUTE_KEY_RENDERER, self::ATTRIBUTE_KEY_ORDER, self::ATTRIBUTE_KEY_STYLE, self::ATTRIBUTE_KEY_SRC];
+    public $defaultAttributes;
 
     const PERCENT_OCCUPY = 10;
 
@@ -139,6 +139,7 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
         $this->_rendererFactory = $rendererFactory;
 
         $this->supportedTypes = [ self::TYPE_CONTAINER, self::TYPE_BLOCK ];
+        $this->defaultAttributes = [ self::ATTRIBUTE_KEY_NAME, self::ATTRIBUTE_KEY_RENDERER, self::ATTRIBUTE_KEY_ORDER, self::ATTRIBUTE_KEY_STYLE, self::ATTRIBUTE_KEY_SRC ];
     }
 
 
@@ -346,7 +347,7 @@ class Layout extends \Magento\Framework\Simplexml\Config implements LayoutInterf
         ]);
 
         $data = $this->_scheduledStructure->getStructureElementData($name, []);
-        foreach (self::DEFAULT_ATTRIBUTES as $attributeKey) {
+        foreach ($this->defaultAttributes as $attributeKey) {
             $data[self::KEY_ATTRIBUTES][$attributeKey] = (string) $currentNode->getAttribute($attributeKey);
         }
         $data[self::KEY_ATTRIBUTES]['name'] = $name;
