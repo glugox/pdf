@@ -186,6 +186,7 @@ class AbstractRenderer extends Element implements RendererInterface
                                 // var floatersMaxHeight has value because
                                 // we have previous element floated.
                                 $schelduledY += $floatersMaxHeight;
+                                $schelduledX = 0;
                                 $rFloatSchelduledX = $bBox->getInnerWidth();
                                 $currY = $schelduledY;
                                 if($chIsRendered){
