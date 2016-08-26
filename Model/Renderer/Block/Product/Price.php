@@ -76,6 +76,7 @@ class Price extends MultilineText
      */
     public function _render()
     {
+        $this->setCanRequestNewPage(false);
         $this->buildLines();
         return parent::_render();
     }

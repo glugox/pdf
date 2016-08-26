@@ -15,6 +15,22 @@ use Glugox\PDF\Model\Renderer\Block\MultilineText;
 
 class ListMode extends MultilineText
 {
+
+
+    /**
+     * @return \Magento\Catalog\Model\Product|mixed
+     */
+    public function getProduct(){
+        $product = $this->getConfig()->getProduct();
+        if(!$product || !$product instanceof \Magento\Catalog\Model\Product){
+            if($this->getParent()){
+                $product = $this->getParent()->getSrc();
+            }
+        }
+        return $product;
+    }
+
+
     /**
      * Initializes data needed for rendering
      * of this element.
@@ -27,20 +43,15 @@ class ListMode extends MultilineText
 
     }
 
+    
+
     /**
      * Method executed after initializetion
      */
     public function boot()
     {
         parent::boot();
-        $product = $this->getConfig()->getProduct();
-        if(!$product || !$product instanceof \Magento\Catalog\Model\Product){
-            if($this->getParent()){
-                $product = $this->getParent()->getSrc();
-            }
-        }
-
-
+        $product = $this->getProduct();
         $attributes = $product->getAttributes();
         $style = $this->getStyle();
         $data = [];
