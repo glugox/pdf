@@ -297,7 +297,7 @@ class Config extends AbstractHelper {
      * @return \int
      */
     public function getPdfBodyPadding() {
-        return (int) $this->getConfig('design/body_padding');
+        return (string) $this->getConfig('design/body_padding');
     }
 
 
