@@ -52,7 +52,10 @@
                                    renderer="Glugox\PDF\Model\Renderer\Block\Product\Title"
                                    style="font-size:14; color:#333333; font-weight:normal; line-spacing:7; margin:10 0 0 0; padding:0 5; background-color:#00ff00;">
                             </block>
-                            <block order="3"
+                            <block order="3" renderer="Glugox\PDF\Model\Renderer\Block\Product\Attributes\ListMode" name="attributes"
+                                   style="background-color:#f7f7f7; color:#000000;  margin:10 0 0 0; display:block; padding:0 5; line-spacing:8; font-size:8;">
+                            </block>
+                            <block order="4"
                                    name="price"
                                    renderer="Glugox\PDF\Model\Renderer\Block\Product\Price"
                                    style="font-size:14; color:#020202; font-weight:bold; display:block; margin:10 0 0 0; padding:0 5; background-color:#f7f7f7;">

@@ -88,6 +88,10 @@
                     <label>Display attributes in single mode</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="display_attributes_in_list_mode" translate="label" type="select" sortOrder="59" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display attributes in list mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
                 <field id="body_padding" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Body padding</label>
                     <comment>Measurement is in points (1/72 of an inch)</comment>
