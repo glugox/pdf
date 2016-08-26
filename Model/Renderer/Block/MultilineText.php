@@ -196,7 +196,7 @@ class MultilineText extends AbstractRenderer
 
 
         // new page?
-        if(false !== $this->checkNewPage($y1)){
+        if($this->getCanRequestNewPage() && false !== $this->checkNewPage($y1)){
             return Element::NEW_PAGE_FLAG;
         }
 
@@ -229,7 +229,7 @@ class MultilineText extends AbstractRenderer
                     $changedColor = false;
                 }
                 $y1 -= $lineHeight;
-                if(false !== $this->checkNewPage($y1)){
+                if($this->getCanRequestNewPage() && false !== $this->checkNewPage($y1)){
                     return Element::NEW_PAGE_FLAG;
                 }
 

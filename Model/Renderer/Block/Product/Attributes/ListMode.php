@@ -23,6 +23,8 @@ class ListMode extends MultilineText
     {
         parent::initialize($config);
 
+        $this->setCanRequestNewPage(false);
+
     }
 
     /**
