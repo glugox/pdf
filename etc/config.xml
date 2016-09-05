@@ -13,12 +13,14 @@
             <general>
                 <max_items_on_list>400</max_items_on_list>
                 <cache_enabled>1</cache_enabled>
+                <debug_mode>0</debug_mode>
             </general>
             <design>
                 <display_logo>1</display_logo>
                 <logo_height>70</logo_height>
                 <header_on_each_page>1</header_on_each_page>
                 <display_store_name>1</display_store_name>
+                <store_name>Luma © 2016 , +1-404-305-7639, Spresstrasse 44.</store_name>
                 <display_price>1</display_price>
                 <display_categories>1</display_categories>
                 <display_sku>1</display_sku>
@@ -55,8 +57,8 @@
                 <single_image_max_width>400</single_image_max_width>
                 <single_image_max_height>400</single_image_max_height>
                 <show_image_in_list_mode>1</show_image_in_list_mode>
-                <list_image_max_width>120</list_image_max_width>
-                <list_image_max_height>70</list_image_max_height>
+                <list_image_max_width>130</list_image_max_width>
+                <list_image_max_height>80</list_image_max_height>
             </image>
         </glugox_pdf>
     </default>

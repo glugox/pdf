@@ -83,7 +83,7 @@ class CreateCommand extends Command {
 
         $this->_registry = $registry;
         $this->_pdfService = $pdfService;
-        $this->_pdfService->setAreaCode("frontend");
+        //$this->_pdfService->setAreaCode("frontend");
         $this->_varDirectory = $filesystem->getDirectoryWrite(DirectoryList::VAR_DIR);
         $this->_helper = $helper;
         parent::__construct();
